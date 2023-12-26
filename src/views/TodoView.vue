@@ -33,6 +33,11 @@ function receivedFunction(todos: { title: string }) {
   // todoList.last_updated = Date.now();
   console.log(todoList);
 }
+function randclog(func: Function) {
+  console.log("using passed function");
+  func();
+  console.log("end of passed function");
+}
 </script>
 
 <template>
@@ -44,6 +49,7 @@ function receivedFunction(todos: { title: string }) {
       :passed="passMsg"
       :list="todoList"
       @add-todo="receivedFunction"
+      @rand-log-event="randclog"
     />
   </main>
 </template>

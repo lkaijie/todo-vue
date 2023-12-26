@@ -5,6 +5,8 @@
 
     <div class="d">{{ todo.title }}</div>
     <span>{{ passed }}</span>
+    <button @click="$emit('randLogEvent', randclog)">randclog</button>
+    <!-- <button @click="$emit('someEvent')">click me</button> -->
   </div>
 </template>
 
@@ -16,7 +18,7 @@ const props = defineProps({
   list: Object,
 });
 
-let emit = defineEmits(["addTodo"]);
+let emit = defineEmits(["addTodo", "randLogEvent"]);
 
 console.log(props.passed);
 // onMounted(() => {
