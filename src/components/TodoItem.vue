@@ -1,18 +1,18 @@
 <template>
   <div>
-    <h1>{{ title }}</h1>
-    <p>{{ description }}</p>
-    <p>{{ completed }}</p>
-    <p>{{ id }}</p>
+    <h1>Title: {{ todo.title }}</h1>
+    <p>Description: {{ todo.description }}</p>
+    <p>Completed: {{ todo.completed }}</p>
+    <!-- <p>{{}}</p> -->
   </div>
 </template>
 
 <script setup lang="ts">
 const props = defineProps({
-  title: String,
-  description: String,
-  completed: Boolean,
-  id: String,
+  todo: {
+    type: Object,
+    required: true,
+  },
 });
 
 console.log(props);

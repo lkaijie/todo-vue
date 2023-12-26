@@ -35,7 +35,11 @@ const todos: { title: string }[] = [];
 function addTodo() {
   var title = todo.title;
 
-  var newtodo = reactive({ title: title });
+  var newtodo = reactive({
+    title: title,
+    description: "test",
+    completed: false,
+  });
   todos.push(newtodo);
   todo.title = "";
   //   console.log(todos);
