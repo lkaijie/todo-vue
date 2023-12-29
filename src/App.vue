@@ -9,11 +9,14 @@ import TodoFooter from "./components/TodoFooter.vue";
   <TodoHeader />
   <!-- <TodoHeader /> -->
   <RouterView />
-  <TodoFooter />
+  <!-- <TodoFooter /> -->
 </template>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;700&display=swap");
+
 * {
+  font-family: "Rubik", sans-serif;
   box-sizing: border-box;
   margin: 0;
   padding: 0;

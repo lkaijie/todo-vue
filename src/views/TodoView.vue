@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import TodoCreator from "@/components/TodoCreator.vue";
 import TodoItemVue from "@/components/TodoItem.vue";
+import { storage } from "@/utils/storage";
 import { ref, reactive } from "vue";
 
 let passMsg = ref("TESGING");
@@ -11,8 +12,9 @@ var todoList = reactive({
 });
 
 // read from local storage
-var todosFromLocal = localStorage.getItem("todos");
-var todos = JSON.parse(todosFromLocal || "[]");
+// var todosFromLocal = localStorage.getItem("todos");
+// var todos = JSON.parse(todosFromLocal || "[]");
+var todos = storage.load();
 todoList.todos = todos;
 
 function receivedFunction1(todos: { title: string }[]) {
@@ -40,7 +42,8 @@ function receivedFunction(todos: { title: string }) {
   console.log(todoList);
 
   // write to local storage
-  localStorage.setItem("todos", JSON.stringify(todoList.todos));
+  storage.save(todoList.todos);
+  // localStorage.setItem("todos", JSON.stringify(todoList.todos));
 }
 function randclog(func: Function) {
   console.log("using passed function");
@@ -51,23 +54,47 @@ function randclog(func: Function) {
 function clearTodos() {
   todoList.todos = [];
   todoList.last_updated = new Date();
-  localStorage.setItem("todos", JSON.stringify(todoList.todos));
+  storage.save(todoList.todos);
+  // localStorage.setItem("todos", JSON.stringify(todoList.todos));
 }
 </script>
 
 <template>
   <main>
-    <h1>Create a new todo</h1>
-    <button @click="clearTodos">Clear Todos</button>
-    <span>LAST UPDATED: {{ todoList.last_updated }}</span>
-    <!-- <span></span> -->
-    <!-- <TodoCreator passed="passMsg" /> -->
-    <TodoCreator
-      :passed="passMsg"
-      :list="todoList"
-      @add-todo="receivedFunction"
-      @rand-log-event="randclog"
-    />
+    <div class="main-container">
+      <!-- <h1>Create a new todo</h1> -->
+      <button @click="clearTodos">Clear Todos</button>
+      <div class="recent-updates">
+        <div>
+          <span class="last-updated">Last Updated On: </span
+          >{{ todoList.last_updated }}
+        </div>
+      </div>
+      <!-- <span>LAST UPDATED: {{ todoList.last_updated }}</span> -->
+      <TodoCreator
+        :passed="passMsg"
+        :list="todoList"
+        @add-todo="receivedFunction"
+        @rand-log-event="randclog"
+      />
+    </div>
     <TodoItemVue v-for="todo in todoList.todos" :todo="todo" />
   </main>
 </template>
+
+<style scoped lang="scss">
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: aliceblue;
+  padding: 1rem;
+}
+
+.last-updated {
+  font-size: 1.2rem;
+  color: #333;
+  font-weight: 900;
+}
+</style>
