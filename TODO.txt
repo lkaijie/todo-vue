@@ -1,0 +1,14 @@
+So the structure of the app will be
+
+
+
+``` 
+enter title
+enter description
+
+create
+
+
+when clicked on the todo, open up another menu, then you can edit the information of the todo, or add addtional info like duedate and priorirty
+
+'''

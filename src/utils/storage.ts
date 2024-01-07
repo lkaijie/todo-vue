@@ -13,10 +13,35 @@ export const storage = {
 		// save: (todos: []) => {
 		localStorage.setItem("todos", JSON.stringify(todos));
 	},
-	load: () => {
+	// load: () => {
+	// 	const todos = localStorage.getItem("todos");
+	// 	if (todos) {
+	// 		return JSON.parse(todos);
+	// 	}
+	// 	return [];
+	// },
+	load: (): Todo[] => {
 		const todos = localStorage.getItem("todos");
 		if (todos) {
-			return JSON.parse(todos);
+			// return JSON.parse(todos);
+			const todosParsed = JSON.parse(todos);
+			const convertedTodos: Todo[] = [];
+			todosParsed.forEach((todo: Todo) => {
+				convertedTodos.push(
+					new Todo(
+						todo.title,
+						todo.description,
+						todo.completed,
+						todo.type,
+						todo.date,
+						todo.dueDate,
+						todo.id,
+						todo.priority,
+						todo.favourite
+					)
+				);
+			});
+			return convertedTodos;
 		}
 		return [];
 	},

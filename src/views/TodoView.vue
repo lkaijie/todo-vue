@@ -4,25 +4,15 @@ import TodoCreator from "@/components/TodoCreator.vue";
 import TodoItemVue from "@/components/TodoItem.vue";
 import { storage } from "@/utils/storage";
 import { ref, reactive } from "vue";
-// import { Todo } from "@/classes/Todo";
-
-// let todo = new Todo("title");
 
 // at some point change todos to use the class todo instead of just
 let passMsg = ref("TESGING");
 var todoList = reactive({
-	// todos: [],
-	// todos: [{}],
-	// this could cause some bugs but just testing for now
-	// todos: [Todo], // this is expecting a typeofTodo? idk? according to copilot
-	// todos: [],
-	todos: [] as Todo[],
+	todos: [] as Todo[], // as Todo[] is a type assertion, indicate that todos is an array of Todo objects
 	last_updated: new Date(),
 });
 
 // read from local storage
-// var todosFromLocal = localStorage.getItem("todos");
-// var todos = JSON.parse(todosFromLocal || "[]");
 var todos = storage.load();
 todoList.todos = todos;
 
@@ -52,17 +42,19 @@ function receivedFunction2(func: Function) {
 // 	storage.save(todoList.todos);
 // 	// localStorage.setItem("todos", JSON.stringify(todoList.todos));
 // }
-function receivedFunction(todos: Todo) {
-	console.log("I have received todos from TodoCreator");
-	console.log(todos);
-	// todoList.todos = todos;
+function receivedFunction(todo: Todo) {
+	// console.log("I have received todos from TodoCreator");
+	// console.log("top of functiona t th start");
+	// console.log(todo instanceof Todo);
+	// console.log(todoList.todos);
+	// todoList.todos.forEach((todo) => {
+	// 	console.log("logging todoakoshdsdal" + todo);
+	// 	console.log(todo instanceof Todo);
+	// });
+	//  once received a new todo, add it to list of Todos, update the last_updated date, and save to local storage
 	todoList.last_updated = new Date();
-	todoList.todos.unshift(todos);
-	// todoList.last_updated = Date.now();
-	console.log(todoList);
-	// write to local storage
+	todoList.todos.unshift(todo);
 	storage.save(todoList.todos);
-	// localStorage.setItem("todos", JSON.stringify(todoList.todos));
 }
 function randclog(func: Function) {
 	console.log("using passed function");
@@ -75,8 +67,8 @@ function clearTodos() {
 	todoList.todos = [];
 	todoList.last_updated = new Date();
 	storage.save(todoList.todos);
-	// localStorage.setItem("todos", JSON.stringify(todoList.todos));
 }
+console.log("logging todolist.todos" + todoList.todos);
 </script>
 
 <template>

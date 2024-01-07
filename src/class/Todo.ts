@@ -17,6 +17,7 @@ export class Todo {
 	id: any;
 	dueDate: Date;
 	priority: string;
+	favourite: boolean = false;
 
 	// additional information about todo
 	type: string;
@@ -32,9 +33,11 @@ export class Todo {
 		date: Date = new Date(),
 		dueDate: Date = new Date(new Date().setDate(new Date().getDate() + 1)), // Set dueDate to one day after the current date (by copilot, source is also by them lol) (via https://stackoverflow.com/a/563442/1375163)
 		id: any = null,
-		priority: string = "normal"
+		priority: string = "normal",
+		favourite: boolean = false
 	) {
 		this.title = title;
+		this.favourite = favourite;
 		this.description = description;
 		this.completed = completed;
 		this.priority = priority;
@@ -69,5 +72,9 @@ export class Todo {
 	// toggle completion status
 	toggleCompleted() {
 		this.completed = !this.completed;
+		console.log("toggled from the class xd");
+	}
+	toggleFavourite() {
+		this.favourite = !this.favourite;
 	}
 }
