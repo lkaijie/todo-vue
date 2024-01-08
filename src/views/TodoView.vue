@@ -3,7 +3,7 @@ import { Todo } from "@/class/Todo";
 import TodoCreator from "@/components/TodoCreator.vue";
 import TodoItemVue from "@/components/TodoItem.vue";
 import { storage } from "@/utils/storage";
-import { ref, reactive } from "vue";
+import { ref, reactive, computed, watch } from "vue";
 
 // at some point change todos to use the class todo instead of just
 let passMsg = ref("TESGING");
@@ -15,6 +15,14 @@ var todoList = reactive({
 // read from local storage
 var todos = storage.load();
 todoList.todos = todos;
+
+watch(
+	todoList.todos,
+	(newTodos) => {
+		storage.save(newTodos);
+	},
+	{ deep: true }
+);
 
 function receivedFunction1(todos: { title: string }[]) {
 	console.log("I have received todos from TodoCreator");
@@ -69,6 +77,27 @@ function clearTodos() {
 	storage.save(todoList.todos);
 }
 console.log("logging todolist.todos" + todoList.todos);
+// const sortedTodos
+const sortedTodos = computed(() => {
+	return [...todoList.todos].sort((a, b) => {
+		// Favourites and not done come first
+		if (a.favourite && !a.completed && (!b.favourite || b.completed)) return -1;
+		if (b.favourite && !b.completed && (!a.favourite || a.completed)) return 1;
+
+		// Then come the notcompleted
+		if (!a.completed && b.completed) return -1;
+		if (a.completed && !b.completed) return 1;
+
+		// Then come thecompleted
+		return 0;
+	});
+});
+
+// beforeUnmount() {
+//   console.log("onBeforeUnmount");
+//   // write to local storage
+//   // storage.save(todoList.todos);
+// }
 </script>
 
 <template>
@@ -90,7 +119,8 @@ console.log("logging todolist.todos" + todoList.todos);
 				@rand-log-event="randclog"
 			/>
 		</div>
-		<TodoItemVue v-for="todo in todoList.todos" :todo="todo" />
+		<!-- <TodoItemVue v-for="todo in todoList.todos" :todo="todo" /> -->
+		<TodoItemVue v-for="todo in sortedTodos" :todo="todo" />
 	</main>
 </template>
 

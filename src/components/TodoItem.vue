@@ -1,8 +1,14 @@
 <template>
 	<div class="todo-item">
-		<input type="checkbox" id="checklist" name="checklist" />
+		<!-- some bug with input, remove this and make it an svg instead, because it bugs out -->
+		<input
+			type="checkbox"
+			id="checklist"
+			name="checklist"
+			@click="toggleDone"
+		/>
 		<!-- <label for="checklist">Checklist</label> -->
-		<div class="todo-info">
+		<div class="todo-info" @click="editTodo">
 			<h1>Title: {{ todo.title }}</h1>
 			<p>Description: {{ todo.description }}</p>
 			<p>Completed: {{ todo.completed }}</p>
@@ -44,8 +50,14 @@ const props = defineProps({
 	},
 });
 
+// i see the problem with this approach, this one gets ALL elements with favourte,
+// instead of the one i want so it messes up
+
 // var favourite = document.getElementById("favourite");
 // favourite?.addEventListener("click", toggleFavourite);
+function toggleDone() {
+	props.todo.toggleCompleted();
+}
 
 function toggleFavourite() {
 	props.todo.toggleFavourite();
