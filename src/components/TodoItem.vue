@@ -1,12 +1,22 @@
 <template>
 	<div class="todo-item">
 		<!-- some bug with input, remove this and make it an svg instead, because it bugs out -->
-		<input
+		<!-- <input
 			type="checkbox"
 			id="checklist"
 			name="checklist"
 			@click="toggleDone"
-		/>
+		/> -->
+		<div class="completed-container" @click="toggleDone">
+			<font-awesome-icon
+				v-if="todo.completed"
+				:icon="['fas', 'check-square']"
+				class="fcomplete"
+			/>
+			<!-- empty checkbox -->
+			<font-awesome-icon v-else :icon="['far', 'square']" class="fcomplete" />
+		</div>
+
 		<!-- <label for="checklist">Checklist</label> -->
 		<div class="todo-info" @click="editTodo">
 			<h1>Title: {{ todo.title }}</h1>
@@ -87,6 +97,20 @@ function editTodo() {
 
 div {
 	background-color: aliceblue;
+}
+.completed-container {
+	width: 5%;
+	/* color: inherit; */
+	background-color: inherit;
+	/* height: 1.5rem; */
+	font-size: 3rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.fcomplete {
+	/* color: green; */
+	/* width: 20px; */
 }
 .gold {
 	color: gold;

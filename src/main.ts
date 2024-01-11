@@ -12,11 +12,15 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 /* import specific icons */
 import { faUserSecret } from "@fortawesome/free-solid-svg-icons";
 // import star for favourites
-import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { faStar, faCheckSquare, fas } from "@fortawesome/free-solid-svg-icons";
+import { faSquare } from "@fortawesome/free-regular-svg-icons";
 
 /* add icons to the library */
 library.add(faUserSecret);
 library.add(faStar);
+library.add(fas);
+library.add(faSquare);
+
 const app = createApp(App);
 
 app.use(router);
