@@ -19,9 +19,9 @@
 
 		<!-- <label for="checklist">Checklist</label> -->
 		<div class="todo-info" @click="editTodo">
-			<h1>Title: {{ todo.title }}</h1>
-			<p>Description: {{ todo.description }}</p>
-			<p>Completed: {{ todo.completed }}</p>
+			<h1>{{ todo.title }}</h1>
+			<!-- <p>Description: {{ todo.description }}</p>
+			<p>Completed: {{ todo.completed }}</p> -->
 		</div>
 		<button class="favourite-button">
 			<span @click="toggleFavourite">
@@ -67,6 +67,17 @@ const props = defineProps({
 // favourite?.addEventListener("click", toggleFavourite);
 function toggleDone() {
 	props.todo.toggleCompleted();
+	if (props.todo.completed) {
+		var completionSound = new Audio("sounds/completion2.mp3");
+		// console.log("completed");
+		completionSound.play();
+		// completionSound.currentTime = 0; // Start at the beginning
+		// completionSound.play();
+		// setTimeout(() => {
+		// 	completionSound.pause(); // Pause the sound
+		// 	completionSound.currentTime = 0; // Reset the time
+		// }, 700); // Stop after 500 milliseconds (0.5 seconds)
+	}
 }
 
 function toggleFavourite() {
@@ -134,10 +145,13 @@ div {
 	border-radius: 5px;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 	padding: 20px;
-	margin-bottom: 20px;
+	margin-bottom: 10px;
+	margin-right: 40px;
+	margin-left: 40px;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
+	/* margin: 40px; */
 }
 .todo-item:hover {
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);

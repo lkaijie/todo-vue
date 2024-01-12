@@ -93,11 +93,13 @@ const sortedTodos = computed(() => {
 	});
 });
 
-// beforeUnmount() {
-//   console.log("onBeforeUnmount");
-//   // write to local storage
-//   // storage.save(todoList.todos);
-// }
+const pendingTodos = computed(() => {
+	return todoList.todos.filter((todo) => !todo.completed);
+});
+
+const completedTodos = computed(() => {
+	return todoList.todos.filter((todo) => todo.completed);
+});
 </script>
 
 <template>
@@ -120,11 +122,44 @@ const sortedTodos = computed(() => {
 			/>
 		</div>
 		<!-- <TodoItemVue v-for="todo in todoList.todos" :todo="todo" /> -->
-		<TodoItemVue v-for="todo in sortedTodos" :todo="todo" />
+		<!-- <TodoItemVue v-for="todo in sortedTodos" :todo="todo" /> -->
+		<div name="list" class="pending-container">
+			<TodoItemVue v-for="todo in pendingTodos" :todo="todo" :key="todo.id" />
+		</div>
+		<div class="seperator">COMPLETED TODOS</div>
+		<div class="done-container">
+			<TodoItemVue v-for="todo in completedTodos" :todo="todo" />
+		</div>
 	</main>
 </template>
 
 <style scoped lang="scss">
+.seperator {
+	font-size: 1.5rem;
+	font-weight: 900;
+	color: #333;
+	align-items: center;
+	text-align: center;
+}
+
+.pending-container {
+	// display: flex;
+	// flex-direction: column;
+	// align-items: center;
+	// justify-content: center;
+	// background-color: aliceblue;
+	padding: 5rem;
+}
+
+.done-container {
+	// display: flex;
+	// flex-direction: column;
+	// align-items: center;
+	// justify-content: center;
+	// background-color: aliceblue;
+	padding: 5rem;
+	// font-size: 1rem;
+}
 .main-container {
 	display: flex;
 	flex-direction: column;
