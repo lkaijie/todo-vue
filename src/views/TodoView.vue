@@ -94,7 +94,14 @@ const sortedTodos = computed(() => {
 });
 
 const pendingTodos = computed(() => {
-	return todoList.todos.filter((todo) => !todo.completed);
+	var sorted = todoList.todos.filter((todo) => !todo.completed);
+	return [...sorted].sort((a, b) => {
+		// Favourites and not done come first
+		if (a.favourite && !a.completed && (!b.favourite || b.completed)) return -1;
+		if (b.favourite && !b.completed && (!a.favourite || a.completed)) return 1;
+
+		return 0;
+	});
 });
 
 const completedTodos = computed(() => {
