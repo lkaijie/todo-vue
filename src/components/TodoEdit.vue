@@ -12,6 +12,7 @@
 				type="text"
 				required
 				ref="textarea"
+				@keydown.tab.prevent="addTab"
 			></textarea>
 
 			<label for="dueDate">Due Date</label>
@@ -31,7 +32,7 @@
 
 <script setup lang="ts">
 import { Todo } from "@/class/Todo";
-import { ref, onMounted, watch, onUnmounted } from "vue";
+import { ref, onMounted, watch, onUnmounted, nextTick } from "vue";
 import { useTextareaAutosize } from "@vueuse/core";
 // reference to props.todo
 
@@ -47,14 +48,30 @@ const props = defineProps({
 const { textarea, input } = useTextareaAutosize({
 	input: props.todo.description,
 });
-// watch(
-// 	input,
-// 	(newVal) => {
-// 		props.todo.description = newVal;
-// 		console.log(newVal);
-// 	},
-// 	{ deep: true }
-// );
+
+function addTab(e: KeyboardEvent) {
+	console.log(e);
+	const target = e.target as HTMLTextAreaElement;
+
+	const spaces = "    "; // 4 spaces
+	const start = target.selectionStart;
+	console.log(start);
+	console.log(target);
+	const end = target.selectionEnd;
+	const value = target.value;
+	// target.setSelectionRange(start, end);
+	input.value = value.substring(0, start) + spaces + value.substring(end);
+	// target.selectionEnd = target.selectionStart = 1;
+	// target.selectionEnd = target.selectionStart = start + spaces.length;
+	// props.todo.description =
+	// 	value.substring(0, start) + spaces + value.substring(end);
+	// target.value = value.substring(0, start) + spaces + value.substring(end);
+	// target.selectionStart = target.selectionEnd = start - spaces.length;
+	e.preventDefault();
+	nextTick(() => {
+		target.selectionEnd = target.selectionStart = start + spaces.length;
+	});
+}
 
 const submitForm = () => {
 	// Handle form submission
@@ -85,6 +102,8 @@ onUnmounted(() => {
 	overflow: hidden;
 	min-height: 90px;
 	padding: 3px;
+	border: 1px solid #ccc; /* Add this line */
+	border-radius: 5px;
 }
 
 .edit-todo h1 {
