@@ -6,9 +6,28 @@ So the structure of the app will be
 enter title
 enter description
 
+
+2024-1-20
+- get the edit todo to work, open editing menu on click and allow editing.
+
+
+
+
 create
 
 
 when clicked on the todo, open up another menu, then you can edit the information of the todo, or add addtional info like duedate and priorirty
 
-'''
+
+
+stuff to add
+edit stuff of course
+edit ding sound effect(need to cut the first 0.2 seconds or somethign)
+revamp css
+
+
+
+
+
+
+```

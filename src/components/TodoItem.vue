@@ -7,7 +7,7 @@
 			name="checklist"
 			@click="toggleDone"
 		/> -->
-		<div class="completed-container" @click="toggleDone">
+		<div class="completed-container" @click.stop="toggleDone">
 			<font-awesome-icon
 				v-if="todo.completed"
 				:icon="['fas', 'check-square']"
@@ -20,38 +20,55 @@
 		<!-- <label for="checklist">Checklist</label> -->
 		<div class="todo-info" @click="editTodo">
 			<h1>{{ todo.title }}</h1>
-			<!-- <p>Description: {{ todo.description }}</p>
-			<p>Completed: {{ todo.completed }}</p> -->
 		</div>
 		<button class="favourite-button">
 			<span @click="toggleFavourite">
-				<!-- <font-awesome-icon :icon="['fas', 'star']" /> -->
-				<!-- <font-awesome-icon icon="fa-solid fa-user-secret" /> -->
-				<!-- <font-awesome-icon icon="star" /> -->
 				<font-awesome-icon
 					:icon="['fas', 'star']"
 					id="favourite"
 					:class="{ gold: todo.favourite }"
 				/>
-				<!-- <font-awesome-icon icon="fa-solid fa-user-secret" /> -->
 			</span>
 		</button>
-		<!-- use font awesome for the button prob xd -->
-		<!-- not favourite emoji -->
-		<!-- <button class="favourite-button">🚫</button> -->
 	</div>
-	<TodoEdit v-if="isEditing" />
+	<Transition>
+		<TodoEdit
+			v-if="isEditing"
+			:todo="todo"
+			ref="modalRef"
+			@close-edit="closeFunc"
+		/>
+	</Transition>
 </template>
 
 <script setup lang="ts">
 import { Todo } from "@/class/Todo";
+import { onClickOutside } from "@vueuse/core";
 import { ref } from "vue";
 // import TodoCreator from "./TodoCreator.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import TodoEdit from "./TodoEdit.vue";
 
 let isEditing = ref(false);
+let modalRef = ref(null);
+// custom directive for focusings.
+// const checkFocus = {
+// 	mounted(el: HTMLElement) {
+// 		el.focus();
+// 		onclick;
+// 	},
+// };
 
+onClickOutside(modalRef, (e) => {
+	setTimeout(() => {
+		isEditing.value = false;
+	}, 0);
+	console.log(e);
+});
+
+function closeFunc(editing: boolean) {
+	isEditing.value = editing;
+}
 const props = defineProps({
 	todo: {
 		type: Todo, // the reason this is not Todo is because when we load from local storage it returns an Objec
@@ -105,7 +122,17 @@ function editTodo() {
 /* #favourite {
 	color: gray;
 } */
+.v-enter-active,
+.v-leave-active {
+	transition: opacity 0.3s ease;
+}
 
+.v-enter-from,
+.v-leave-to {
+	opacity: 0;
+}
+
+/*  */
 div {
 	background-color: aliceblue;
 }
@@ -118,6 +145,7 @@ div {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	margin: 20px;
 }
 .fcomplete {
 	/* color: green; */
@@ -131,11 +159,11 @@ div {
 	display: flex;
 	flex-direction: column;
 	background-color: inherit;
-	justify-content: start;
+	justify-content: center;
 	align-items: start;
 	text-align: left;
 	width: 90%;
-	margin: 20px;
+	/* margin: 20px; */
 	margin-left: 40px;
 }
 
@@ -144,8 +172,8 @@ div {
 	border: 1px solid #ddd;
 	border-radius: 5px;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-	padding: 20px;
-	margin-bottom: 10px;
+	/* padding: 20px; */
+	margin-bottom: 20px;
 	margin-right: 40px;
 	margin-left: 40px;
 	display: flex;
@@ -171,6 +199,7 @@ div {
 	font-size: 20px;
 	cursor: pointer;
 	width: 3%;
+	margin: 20px;
 }
 
 /* .favourite-button:hover {
