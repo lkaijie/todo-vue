@@ -7,10 +7,20 @@ enter title
 enter description
 
 
-2024-1-20
+2024-1-20 
 - get the edit todo to work, open editing menu on click and allow editing.
+done pretty much
 
+2024-1-21
+- maybe add a delete function
+- make css look nicer
+- build and upload
 
+instructions to build and publish
+npm run build
+git add dist -f
+git commit -m ..
+git subtree push --prefix dist origin gh-pages // 
 
 
 create
