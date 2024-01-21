@@ -14,6 +14,7 @@ export class Todo {
 	title: string;
 	description: string;
 	completed: boolean;
+	dateCompleted: Date | undefined;
 	id: any;
 	dueDate: Date;
 	priority: string;
@@ -75,6 +76,7 @@ export class Todo {
 	// toggle completion status
 	toggleCompleted() {
 		this.completed = !this.completed;
+		this.dateCompleted = new Date();
 		console.log("toggled from the class xd");
 	}
 	toggleFavourite() {

@@ -9,6 +9,8 @@ import { ref, reactive, computed, watch } from "vue";
 let passMsg = ref("TESGING");
 var todoList = reactive({
 	todos: [] as Todo[], // as Todo[] is a type assertion, indicate that todos is an array of Todo objects
+	todosPastDue: [] as Todo[],
+	todosCompletedPast: [] as Todo[],
 	last_updated: new Date(),
 });
 

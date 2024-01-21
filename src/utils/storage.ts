@@ -13,6 +13,10 @@ export const storage = {
 		// save: (todos: []) => {
 		localStorage.setItem("todos", JSON.stringify(todos));
 	},
+	savePastTodos: (todosCompleted: Todo[], todosNonComplete: Todo[]) => {
+		localStorage.setItem("todosCompleted", JSON.stringify(todosCompleted));
+		localStorage.setItem("todosNonComplete", JSON.stringify(todosNonComplete));
+	},
 	// load: () => {
 	// 	const todos = localStorage.getItem("todos");
 	// 	if (todos) {
@@ -45,6 +49,52 @@ export const storage = {
 			return convertedTodos;
 		}
 		return [];
+	},
+	// () takes no arguments, and returns an array of Todo objects
+	loadPastTodos: (): Todo[][] => {
+		const todosCompleted = localStorage.getItem("todosCompleted");
+		const todosNonComplete = localStorage.getItem("todosNonComplete");
+		if (todosCompleted && todosNonComplete) {
+			// return JSON.parse(todos);
+			const todosCompletedParsed = JSON.parse(todosCompleted);
+			const todosNonCompleteParsed = JSON.parse(todosNonComplete);
+			const convertedTodosCompleted: Todo[] = [];
+			const convertedTodosNonComplete: Todo[] = [];
+			todosCompletedParsed.forEach((todo: Todo) => {
+				console.log(todo);
+				convertedTodosCompleted.push(
+					new Todo(
+						todo.title,
+						todo.description,
+						todo.completed,
+						todo.type,
+						todo.date,
+						todo.dueDate,
+						todo.id,
+						todo.priority,
+						todo.favourite
+					)
+				);
+			});
+			todosNonCompleteParsed.forEach((todo: Todo) => {
+				console.log(todo);
+				convertedTodosNonComplete.push(
+					new Todo(
+						todo.title,
+						todo.description,
+						todo.completed,
+						todo.type,
+						todo.date,
+						todo.dueDate,
+						todo.id,
+						todo.priority,
+						todo.favourite
+					)
+				);
+			});
+			return [convertedTodosCompleted, convertedTodosNonComplete];
+		}
+		return [[], []];
 	},
 	clear: () => {
 		localStorage.removeItem("todos");
