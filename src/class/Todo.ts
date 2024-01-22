@@ -16,7 +16,7 @@ export class Todo {
 	completed: boolean;
 	dateCompleted: Date | undefined;
 	id: any;
-	dueDate: Date;
+	dueDate: string;
 	priority: string;
 	favourite: boolean = false;
 
@@ -32,7 +32,9 @@ export class Todo {
 		completed = false,
 		type: string = "normal",
 		date: Date = new Date(),
-		dueDate: Date = new Date(new Date().setDate(new Date().getDate() + 1)), // Set dueDate to one day after the current date (by copilot, source is also by them lol) (via https://stackoverflow.com/a/563442/1375163)
+		dueDate: string = new Date(new Date().setDate(new Date().getDate() + 1))
+			.toISOString()
+			.split("T")[0], // Set dueDate to one day after the current date (by copilot, source is also by them lol) (via https://stackoverflow.com/a/563442/1375163)
 		// id: any =
 		// generate a random id (via https://stackoverflow.com/a/2117523/1375163)
 		id: any = Math.random().toString(36).substring(2, 15) +
@@ -58,7 +60,7 @@ export class Todo {
 		completed: boolean = this.completed,
 		type: string = this.type,
 		date: Date = this.date,
-		dueDate: Date = this.dueDate,
+		dueDate: string = this.dueDate,
 		id: any = this.id,
 		priority: string = this.priority
 	) {

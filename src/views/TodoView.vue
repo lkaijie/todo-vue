@@ -3,7 +3,7 @@ import { Todo } from "@/class/Todo";
 import TodoCreator from "@/components/TodoCreator.vue";
 import TodoItemVue from "@/components/TodoItem.vue";
 import { storage } from "@/utils/storage";
-import { ref, reactive, computed, watch } from "vue";
+import { ref, reactive, computed, watch, onBeforeMount } from "vue";
 
 // at some point change todos to use the class todo instead of just
 let passMsg = ref("TESGING");
@@ -14,8 +14,23 @@ var todoList = reactive({
 	last_updated: new Date(),
 });
 
+// storage.savePastTodos
+// storage.savePastTodos(todoList.todosPastDue, todoList.todosCompletedPast);
+
+storage.savePastTodos(todoList.todosCompletedPast, todoList.todosPastDue);
 // read from local storage
 var todos = storage.load();
+console.log("load");
+console.log(todos);
+var old = storage.loadPastTodos;
+console.log("old");
+console.log(old);
+// var todosPastDue = old[0]
+console.log("initial Todo logging");
+todos.forEach((todo) => {
+	console.log(todo);
+});
+
 todoList.todos = todos;
 
 watch(
