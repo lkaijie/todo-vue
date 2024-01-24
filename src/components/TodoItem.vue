@@ -18,8 +18,14 @@
 		</div>
 
 		<!-- <label for="checklist">Checklist</label> -->
-		<div class="todo-info" @click="editTodo">
-			<h1>{{ todo.title }}</h1>
+		<div
+			class="todo-info"
+			@click="editTodo"
+			:class="{ todoComplete: todo.completed }"
+		>
+			<h1 :style="{ color: todo.completed ? '#605C5E' : '' }">
+				{{ todo.title }}
+			</h1>
 		</div>
 		<button class="favourite-button">
 			<span @click="toggleFavourite">
@@ -66,7 +72,7 @@ onClickOutside(modalRef, (e) => {
 	console.log(e);
 });
 
-function closeFunc(editing: boolean) {
+function toggleEditing(editing: boolean) {
 	isEditing.value = editing;
 }
 const props = defineProps({
@@ -125,6 +131,11 @@ function editTodo() {
 .v-enter-active,
 .v-leave-active {
 	transition: opacity 0.3s ease;
+}
+
+.todoComplete {
+	text-decoration: line-through;
+	/* color: gray !important; */
 }
 
 .v-enter-from,

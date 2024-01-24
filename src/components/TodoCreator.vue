@@ -96,7 +96,7 @@ console.log(todo.title);
 		width: 100%;
 		padding: 8px 6px;
 		border: none;
-		background-color: aliceblue;
+		background-color: inherit;
 		// margin: 10px;
 		margin-bottom: 5px;
 		&:focus {

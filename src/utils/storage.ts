@@ -54,15 +54,13 @@ export const storage = {
 	loadPastTodos: (): Todo[][] => {
 		const todosCompleted = localStorage.getItem("todosCompleted");
 		const todosNonComplete = localStorage.getItem("todosNonComplete");
-		if (todosCompleted && todosNonComplete) {
-			// return JSON.parse(todos);
-			const todosCompletedParsed = JSON.parse(todosCompleted);
-			const todosNonCompleteParsed = JSON.parse(todosNonComplete);
-			const convertedTodosCompleted: Todo[] = [];
-			const convertedTodosNonComplete: Todo[] = [];
-			todosCompletedParsed.forEach((todo: Todo) => {
+		var convertedCompleted: Todo[] = [];
+		var convertedNonComplete: Todo[] = [];
+		if (todosCompleted) {
+			const todosParsed = JSON.parse(todosCompleted);
+			todosParsed.forEach((todo: Todo) => {
 				console.log(todo);
-				convertedTodosCompleted.push(
+				convertedCompleted.push(
 					new Todo(
 						todo.title,
 						todo.description,
@@ -76,26 +74,70 @@ export const storage = {
 					)
 				);
 			});
-			todosNonCompleteParsed.forEach((todo: Todo) => {
-				console.log(todo);
-				convertedTodosNonComplete.push(
-					new Todo(
-						todo.title,
-						todo.description,
-						todo.completed,
-						todo.type,
-						todo.date,
-						todo.dueDate,
-						todo.id,
-						todo.priority,
-						todo.favourite
-					)
-				);
-			});
-			return [convertedTodosCompleted, convertedTodosNonComplete];
 		}
-		return [[], []];
+		if (todosNonComplete) {
+			const todosParsed = JSON.parse(todosNonComplete);
+			todosParsed.forEach((todo: Todo) => {
+				console.log(todo);
+				convertedNonComplete.push(
+					new Todo(
+						todo.title,
+						todo.description,
+						todo.completed,
+						todo.type,
+						todo.date,
+						todo.dueDate,
+						todo.id,
+						todo.priority,
+						todo.favourite
+					)
+				);
+			});
+		}
+		return [convertedCompleted, convertedNonComplete];
 	},
+	// if (todosCompleted && todosNonComplete) {
+	// 	// return JSON.parse(todos);
+	// 	const todosCompletedParsed = JSON.parse(todosCompleted);
+	// 	const todosNonCompleteParsed = JSON.parse(todosNonComplete);
+	// 	const convertedTodosCompleted: Todo[] = [];
+	// 	const convertedTodosNonComplete: Todo[] = [];
+	// 	todosCompletedParsed.forEach((todo: Todo) => {
+	// 		console.log(todo);
+	// 		convertedTodosCompleted.push(
+	// 			new Todo(
+	// 				todo.title,
+	// 				todo.description,
+	// 				todo.completed,
+	// 				todo.type,
+	// 				todo.date,
+	// 				todo.dueDate,
+	// 				todo.id,
+	// 				todo.priority,
+	// 				todo.favourite
+	// 			)
+	// 		);
+	// 	});
+	// 	todosNonCompleteParsed.forEach((todo: Todo) => {
+	// 		console.log(todo);
+	// 		convertedTodosNonComplete.push(
+	// 			new Todo(
+	// 				todo.title,
+	// 				todo.description,
+	// 				todo.completed,
+	// 				todo.type,
+	// 				todo.date,
+	// 				todo.dueDate,
+	// 				todo.id,
+	// 				todo.priority,
+	// 				todo.favourite
+	// 			)
+	// 		);
+	// 	});
+	// 	return [convertedTodosCompleted, convertedTodosNonComplete];
+	// }
+	// return [[], []];
+
 	clear: () => {
 		localStorage.removeItem("todos");
 	},

@@ -28,15 +28,23 @@ console.log(old);
 // var todosPastDue = old[0]
 console.log("initial Todo logging");
 todos.forEach((todo) => {
-	console.log(todo);
+	if (todo.dueDate != null) {
+		if (new Date(todo.dueDate) < new Date()) {
+			if (todo.completed) todoList.todosCompletedPast.push(todo);
+			else todoList.todosPastDue.push(todo);
+		} else {
+			todoList.todos.push(todo);
+		}
+	}
 });
 
-todoList.todos = todos;
+// todoList.todos = todos;
 
 watch(
 	todoList.todos,
 	(newTodos) => {
 		storage.save(newTodos);
+		storage.savePastTodos(todoList.todosCompletedPast, todoList.todosPastDue);
 	},
 	{ deep: true }
 );
@@ -55,27 +63,7 @@ function receivedFunction2(func: Function) {
 	func();
 }
 
-// function receivedFunction(todos: { title: string }) {
-// 	console.log("I have received todos from TodoCreator");
-// 	console.log(todos);
-// 	// todoList.todos = todos;
-// 	todoList.last_updated = new Date();
-// 	todoList.todos.unshift(todos);
-// 	// todoList.last_updated = Date.now();
-// 	console.log(todoList);
-// 	// write to local storage
-// 	storage.save(todoList.todos);
-// 	// localStorage.setItem("todos", JSON.stringify(todoList.todos));
-// }
 function receivedFunction(todo: Todo) {
-	// console.log("I have received todos from TodoCreator");
-	// console.log("top of functiona t th start");
-	// console.log(todo instanceof Todo);
-	// console.log(todoList.todos);
-	// todoList.todos.forEach((todo) => {
-	// 	console.log("logging todoakoshdsdal" + todo);
-	// 	console.log(todo instanceof Todo);
-	// });
 	//  once received a new todo, add it to list of Todos, update the last_updated date, and save to local storage
 	todoList.last_updated = new Date();
 	todoList.todos.unshift(todo);
@@ -189,7 +177,7 @@ const completedTodos = computed(() => {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	background-color: aliceblue;
+	// background-color: aliceblue;
 	padding: 1rem;
 }
 
