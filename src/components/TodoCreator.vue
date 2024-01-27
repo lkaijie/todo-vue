@@ -6,14 +6,8 @@
 			v-model="todo.title"
 			@keyup.enter="addTodo"
 		/>
-		<input
-			type="text"
-			placeholder="Enter the description or addition notes"
-			v-model="todo.content"
-			@keyup.enter="addTodo"
-		/>
 	</div>
-	<button @click="addTodo" class="create-todo-btn">Create</button>
+	<!-- <button @click="addTodo" class="create-todo-btn">Create</button> -->
 </template>
 
 <script setup lang="ts">

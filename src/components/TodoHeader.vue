@@ -2,8 +2,8 @@
 	<header>
 		<nav class="navbar">
 			<div class="branding">
-				<img src="../assets/img.png" alt="logo" />
-				<h1>Vue todos</h1>
+				<!-- <img src="../assets/img.png" alt="logo" /> -->
+				<img src="/logotodo.jpg" alt="logo" />
 			</div>
 			<ul class="nav-links">
 				<li><RouterLink to="/">Home</RouterLink></li>

@@ -118,24 +118,24 @@ const completedTodos = computed(() => {
 	<main>
 		<div class="main-container">
 			<!-- <h1>Create a new todo</h1> -->
-			<button @click="clearTodos">Clear Todos</button>
 			<div class="recent-updates">
 				<div>
 					<span class="last-updated">Last Updated On: </span
 					>{{ todoList.last_updated }}
 				</div>
+				<button @click="clearTodos">Clear Todos</button>
 			</div>
 			<!-- <span>LAST UPDATED: {{ todoList.last_updated }}</span> -->
+		</div>
+		<!-- <TodoItemVue v-for="todo in todoList.todos" :todo="todo" /> -->
+		<!-- <TodoItemVue v-for="todo in sortedTodos" :todo="todo" /> -->
+		<div name="list" class="pending-container">
 			<TodoCreator
 				:passed="passMsg"
 				:list="todoList"
 				@add-todo="receivedFunction"
 				@rand-log-event="randclog"
 			/>
-		</div>
-		<!-- <TodoItemVue v-for="todo in todoList.todos" :todo="todo" /> -->
-		<!-- <TodoItemVue v-for="todo in sortedTodos" :todo="todo" /> -->
-		<div name="list" class="pending-container">
 			<TodoItemVue v-for="todo in pendingTodos" :todo="todo" :key="todo.id" />
 		</div>
 		<div class="seperator">COMPLETED TODOS</div>
@@ -146,6 +146,15 @@ const completedTodos = computed(() => {
 </template>
 
 <style scoped lang="scss">
+.recent-updates {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	// background-color: aliceblue;
+	padding: 1rem;
+}
+
 .seperator {
 	font-size: 1.5rem;
 	font-weight: 900;

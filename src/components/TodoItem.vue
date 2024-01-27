@@ -1,12 +1,5 @@
 <template>
 	<div class="todo-item">
-		<!-- some bug with input, remove this and make it an svg instead, because it bugs out -->
-		<!-- <input
-			type="checkbox"
-			id="checklist"
-			name="checklist"
-			@click="toggleDone"
-		/> -->
 		<div class="completed-container" @click.stop="toggleDone">
 			<font-awesome-icon
 				v-if="todo.completed"
@@ -23,9 +16,9 @@
 			@click="editTodo"
 			:class="{ todoComplete: todo.completed }"
 		>
-			<h1 :style="{ color: todo.completed ? '#605C5E' : '' }">
+			<p :style="{ color: todo.completed ? '#605C5E' : '' }">
 				{{ todo.title }}
-			</h1>
+			</p>
 		</div>
 		<button class="favourite-button">
 			<span @click="toggleFavourite">
@@ -145,7 +138,8 @@ function editTodo() {
 
 /*  */
 div {
-	background-color: aliceblue;
+	/* background-color: aliceblue; */
+	background-color: #121212;
 }
 .completed-container {
 	width: 5%;
@@ -179,9 +173,9 @@ div {
 }
 
 .todo-item {
-	background-color: #fff;
+	/* background-color: #fff; */
 	border: 1px solid #ddd;
-	border-radius: 5px;
+	border-radius: 10px;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 	/* padding: 20px; */
 	margin-bottom: 20px;
@@ -190,11 +184,13 @@ div {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
+	opacity: 0.9;
 	/* margin: 40px; */
 }
 .todo-item:hover {
+	opacity: 0.8;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-	background-color: #f0f0f0;
+	/* background-color: #f0f0f0; */
 	cursor: pointer;
 }
 
@@ -219,18 +215,22 @@ div {
 /*  */
 
 h1 {
-	color: red;
+	color: white;
+	opacity: 0.9;
 }
 
 p {
-	color: blue;
+	color: white;
+	opacity: 0.9;
+	/* color: blue; */
+	font-size: 1.5rem;
 }
-
+/* 
 p:nth-child(3) {
 	color: green;
 }
 
 p:nth-child(4) {
 	color: purple;
-}
+} */
 </style>
