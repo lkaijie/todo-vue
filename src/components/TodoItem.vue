@@ -150,10 +150,14 @@ div {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	margin: 20px;
+	margin: 12px;
 }
 .fcomplete {
 	/* color: green; */
+	color: #ddd;
+	width: 20px;
+	/* border: 1px solid white; */
+	/* border-radius: 10px; */
 	/* width: 20px; */
 }
 .gold {
@@ -178,7 +182,7 @@ div {
 	border-radius: 10px;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 	/* padding: 20px; */
-	margin-bottom: 20px;
+	margin-bottom: 5px;
 	margin-right: 40px;
 	margin-left: 40px;
 	display: flex;
@@ -206,7 +210,7 @@ div {
 	font-size: 20px;
 	cursor: pointer;
 	width: 3%;
-	margin: 20px;
+	margin: 12px;
 }
 
 /* .favourite-button:hover {

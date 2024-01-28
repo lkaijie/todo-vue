@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
 	<div class="input-wrap">
 		<input
 			type="text"
@@ -7,11 +7,25 @@
 			@keyup.enter="addTodo"
 		/>
 	</div>
-	<!-- <button @click="addTodo" class="create-todo-btn">Create</button> -->
+</template> -->
+<template>
+	<div class="todo-item" @click="focusInput">
+		<input
+			type="text"
+			ref="todoInput"
+			placeholder="Enter the title of Todo"
+			v-model="todo.title"
+			@keyup.enter="addTodo"
+		/>
+
+		<!-- <div class="todo-info" @keyup.enter="addTodo" v-model="todo.title">
+			<p>ajkosdhjasd</p>
+		</div> -->
+	</div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { Todo } from "@/class/Todo";
 
 const props = defineProps({
@@ -53,6 +67,20 @@ function addTodo() {
 	todo.content = "";
 	emit("addTodo", newtodo);
 }
+// focus input of todocreator
+const todoInput = ref<HTMLInputElement | null>(null);
+
+function focusInput() {
+	if (todoInput.value) {
+		todoInput.value.focus();
+	}
+}
+
+// const focusInput = () => {
+// 	if (todoInput.value) {
+// 		todoInput.value.focus();
+// 	}
+// };
 
 function randclog() {
 	console.log("randclog");
@@ -68,66 +96,52 @@ console.log(todo.title);
 </script>
 
 <style scoped lang="scss">
-.input-wrap {
-	display: flex;
-	transition: 250ms ease;
-	border: 2px solid #41b080;
-	//   max-width: 1000px;
-	width: 400px;
-	flex-direction: column;
-	margin: 1rem;
-
-	&.input-err {
-		border-color: red;
-	}
-
-	&:focus-within {
-		box-shadow: 0 -4px 6px -1px rgb(0 0 0 / 0.1),
-			0 -2px 4px -2px rgb(0 0 0 / 0.1);
-	}
-
-	input {
-		width: 100%;
-		padding: 8px 6px;
-		border: none;
-		background-color: inherit;
-		// margin: 10px;
-		margin-bottom: 5px;
-		&:focus {
-			outline: none;
-		}
-	}
-}
-.create-todo-btn {
-	background-color: #4caf50;
+input {
+	outline: none;
 	border: none;
-	color: azure;
-	padding: 0.5rem 1rem;
-	text-align: center;
-	text-decoration: none;
-	display: inline-block;
-	font-size: 1rem;
-	margin: 0.5rem;
+	// color: inherit;
+	background-color: transparent;
+	margin: 15px;
+	width: 100%;
+	color: #ddd;
+}
+
+div {
+	/* background-color: aliceblue; */
+	background-color: #121212;
+}
+
+.todo-item {
+	/* background-color: #fff; */
+	border: 1px solid #ddd;
+	border-radius: 10px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	/* padding: 20px; */
+	margin-bottom: 20px;
+	margin-right: 50px;
+	margin-left: 40px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	opacity: 0.9;
+	/* margin: 40px; */
+}
+.todo-item:hover {
+	opacity: 0.8;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+	/* background-color: #f0f0f0; */
 	cursor: pointer;
-	border-radius: 0.5rem;
-
-	transition-duration: 0.4s;
 }
 
-.create-todo-btn:hover {
-	background-color: #3e8e41;
-	//   border-radius: 0.7rem;
-	scale: 1.1;
-	//   background-color: linear-gradient(to bottom, #4caf50 5%, #4caf50 100%);
-
-	box-shadow: 0 5px 16px 0 rgba(0, 0, 0, 0.24);
+h1 {
+	color: white;
+	opacity: 0.9;
 }
 
-// .input-wrap {
-//   display: flex;
-//   flex-direction: row;
-//   align-items: center;
-//   justify-content: center;
-//   margin: 1rem;
-// }
+p {
+	color: white;
+	opacity: 0.9;
+	/* color: blue; */
+	font-size: 1.5rem;
+}
 </style>

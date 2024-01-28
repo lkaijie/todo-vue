@@ -115,18 +115,16 @@ const completedTodos = computed(() => {
 </script>
 
 <template>
-	<main>
-		<div class="main-container">
-			<!-- <h1>Create a new todo</h1> -->
+	<main class="todo-main">
+		<button @click="clearTodos">Clear Todos</button>
+		<!-- <div class="main-container">
 			<div class="recent-updates">
 				<div>
 					<span class="last-updated">Last Updated On: </span
 					>{{ todoList.last_updated }}
 				</div>
-				<button @click="clearTodos">Clear Todos</button>
 			</div>
-			<!-- <span>LAST UPDATED: {{ todoList.last_updated }}</span> -->
-		</div>
+		</div> -->
 		<!-- <TodoItemVue v-for="todo in todoList.todos" :todo="todo" /> -->
 		<!-- <TodoItemVue v-for="todo in sortedTodos" :todo="todo" /> -->
 		<div name="list" class="pending-container">
@@ -136,11 +134,14 @@ const completedTodos = computed(() => {
 				@add-todo="receivedFunction"
 				@rand-log-event="randclog"
 			/>
-			<TodoItemVue v-for="todo in pendingTodos" :todo="todo" :key="todo.id" />
-		</div>
-		<div class="seperator">COMPLETED TODOS</div>
-		<div class="done-container">
-			<TodoItemVue v-for="todo in completedTodos" :todo="todo" />
+			<!-- <TodoItemVue :todo="pendingTodos[1]" :key="pendingTodos[1].id" /> -->
+			<div class="todos-pending">
+				<TodoItemVue v-for="todo in pendingTodos" :todo="todo" :key="todo.id" />
+				<div class="seperator">COMPLETED TODOS</div>
+				<div class="done-container">
+					<TodoItemVue v-for="todo in completedTodos" :todo="todo" />
+				</div>
+			</div>
 		</div>
 	</main>
 </template>
@@ -169,7 +170,15 @@ const completedTodos = computed(() => {
 	// align-items: center;
 	// justify-content: center;
 	// background-color: aliceblue;
-	padding: 5rem;
+	// padding: 5rem;
+	// overflow-y: auto;
+	// max-height: 60%;
+	// margin: 20px;
+	margin: 10px 20px 10px 20px;
+	height: 95%;
+	width: 80%;
+	// overflow: hidden;
+	// max-height: 5vh;
 }
 
 .done-container {
@@ -188,11 +197,27 @@ const completedTodos = computed(() => {
 	justify-content: center;
 	// background-color: aliceblue;
 	padding: 1rem;
+	height: 10%;
 }
 
 .last-updated {
 	font-size: 1.2rem;
 	color: #333;
 	font-weight: 900;
+}
+.todo-main {
+	height: 100%;
+	background-image: url("../../public/backgrounds/Ninny.png");
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.todos-pending {
+	overflow-y: scroll;
+	max-height: 100%;
 }
 </style>
