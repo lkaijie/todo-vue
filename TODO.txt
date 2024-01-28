@@ -20,7 +20,13 @@ instructions to build and publish
 npm run build
 git add dist -f
 git commit -m ..
-git subtree push --prefix dist origin gh-pages // 
+git subtree push --prefix dist origin gh-pages //
+ds
+
+
+
+FINAL PRODUCT
+- add a database, firebase or supabase
 
 
 create
