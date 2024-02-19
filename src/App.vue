@@ -2,7 +2,10 @@
 import { RouterView } from "vue-router";
 import TodoHeader from "./components/TodoHeader.vue";
 import TodoFooter from "./components/TodoFooter.vue";
+import { getAuth } from "firebase/auth";
 // import TodoHeader from "./components/TodoHeader.vue";
+
+console.log(getAuth().currentUser);
 </script>
 
 <template>

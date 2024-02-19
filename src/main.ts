@@ -15,6 +15,24 @@ import { faUserSecret } from "@fortawesome/free-solid-svg-icons";
 import { faStar, faCheckSquare, fas } from "@fortawesome/free-solid-svg-icons";
 import { faSquare } from "@fortawesome/free-regular-svg-icons";
 
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+	apiKey: "AIzaSyCWrkD6eRSLrbUsBDe9NqUtKUR662Rb73Y",
+	authDomain: "todo-vue-bf02d.firebaseapp.com",
+	projectId: "todo-vue-bf02d",
+	storageBucket: "todo-vue-bf02d.appspot.com",
+	messagingSenderId: "106404722963",
+	appId: "1:106404722963:web:ca8cf033026968fa85c2e6",
+};
+
+// Initialize Firebase
+initializeApp(firebaseConfig);
+
 /* add icons to the library */
 library.add(faUserSecret);
 library.add(faStar);

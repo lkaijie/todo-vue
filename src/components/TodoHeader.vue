@@ -1,7 +1,7 @@
 <template>
 	<header>
 		<nav class="navbar">
-			<div class="branding">
+			<div class="branding" @click="logUser">
 				<!-- <img src="../assets/img.png" alt="logo" /> -->
 				<img src="/logotodo.jpg" alt="logo" />
 			</div>
@@ -13,7 +13,12 @@
 	</header>
 </template>
 <script setup lang="ts">
+import { getAuth } from "firebase/auth";
 import { RouterLink } from "vue-router";
+
+function logUser() {
+	console.log(getAuth().currentUser);
+}
 </script>
 
 <style scoped lang="scss">
