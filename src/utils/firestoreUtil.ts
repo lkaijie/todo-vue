@@ -1,4 +1,11 @@
 import {
+	GoogleAuthProvider,
+	getAuth,
+	signInWithPopup,
+	signOut,
+} from "firebase/auth";
+import firebase from "firebase/compat/app";
+import {
 	Firestore,
 	collection,
 	getDoc,
@@ -9,6 +16,7 @@ import {
 	query,
 	where,
 	addDoc,
+	doc,
 } from "firebase/firestore";
 
 interface User {
@@ -26,8 +34,9 @@ export class fireUtil {
 		this.db = getFirestore();
 		// const userRef = (collection(this.db, "Users"))
 		this.userRef = collection(this.db, "Users");
+		// const userRef2 = doc(this.db, "Users");
 
-		console.log(this.userRef);
+		// console.log(this.userRef);
 	}
 
 	async checkUserExists(email: String): Promise<boolean> {
@@ -42,8 +51,17 @@ export class fireUtil {
 			// console.log("user does not exists");
 			return false;
 		} else {
-			// console.log("user already has an account");
+			console.log("user already has an account");
+			// console.log()
 			return true;
+		}
+	}
+
+	checkUserLoggedIn(): boolean {
+		if (getAuth().currentUser) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -63,5 +81,44 @@ export class fireUtil {
 			console.log(error);
 			return false;
 		}
+	}
+
+	async logIn() {
+		const provider = new GoogleAuthProvider();
+		try {
+			const result = await signInWithPopup(getAuth(), provider);
+			console.log(result);
+			const db = getFirestore();
+			const currentUser = getAuth().currentUser;
+
+			await this.checkUserExists(currentUser?.email).then((result) => {
+				if (result === true) {
+					console.log("About view, user already exists, logging in");
+				} else {
+					this.createNewUser(currentUser)
+						.then((result) => {
+							console.log("about view, user does not exists, creating user");
+							console.log(result);
+						})
+						.catch((result) => {
+							console.log("error creating user");
+							console.log(result);
+						});
+				}
+			});
+		} catch (error) {
+			console.log("sign in error", error);
+		}
+	}
+
+	async logOut() {
+		const auth = getAuth();
+		signOut(auth)
+			.then(() => {
+				// Sign-out successful.
+			})
+			.catch((error) => {
+				// An error happened.
+			});
 	}
 }

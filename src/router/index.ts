@@ -34,6 +34,20 @@ router.beforeEach((to, from, next) => {
 	const user = getAuth().currentUser;
 	// console.log(to, from, next, user);
 	console.log(user);
+	// onAuthStateChanged(getAuth(), (user) => {
+	// 	if (user) {
+	// 		// User is signed in, see docs for a list of available properties
+	// 		// https://firebase.google.com/docs/reference/js/auth.user
+	// 		// const uid = user.uid;
+	// 		router.push("/");
+	// 		// ...
+	// 	} else {
+	// 		// User is signed out
+	// 		// ...
+	// 		router.push("/about");
+	// 	}
+	// });
+
 	// next();
 	onAuthStateChanged(getAuth(), (user) => {
 		console.log(user);

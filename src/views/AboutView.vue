@@ -15,7 +15,6 @@ import { addDoc, collection, getFirestore } from "firebase/firestore";
 const util = new fireUtil();
 
 async function oauthGoogle() {
-	console.log("logign");
 	const provider = new GoogleAuthProvider();
 	try {
 		const result = await signInWithPopup(getAuth(), provider);

@@ -4,6 +4,7 @@
 </template>
 
 <script setup lang="ts">
+import { fireStorage } from "@/utils/fireStorage";
 import { fireUtil } from "@/utils/firestoreUtil";
 import { getAuth } from "firebase/auth";
 
@@ -16,6 +17,7 @@ function testFunc() {
 	userExists
 		.then((result) => {
 			console.log("success" + result);
+			const testutil = new fireStorage(user?.email);
 		})
 		.catch((result) => {
 			console.log("failuer" + result);

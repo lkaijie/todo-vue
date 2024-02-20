@@ -17,6 +17,7 @@ import { faSquare } from "@fortawesome/free-regular-svg-icons";
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
+import { fireUtil } from "./utils/firestoreUtil";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -40,6 +41,9 @@ library.add(fas);
 library.add(faSquare);
 
 const app = createApp(App);
+const util = new fireUtil();
+app.config.globalProperties.$fireUtil = new fireUtil();
+app.provide("fireUtil", util);
 
 app.use(router);
 
