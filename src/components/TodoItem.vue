@@ -30,14 +30,14 @@
 			</span>
 		</button>
 	</div>
-	<Transition>
+	<!-- <Transition>
 		<TodoEdit
 			v-if="isEditing"
 			:todo="todo"
 			ref="modalRef"
 			@close-edit="closeFunc"
 		/>
-	</Transition>
+	</Transition> -->
 </template>
 
 <script setup lang="ts">
@@ -68,10 +68,17 @@ onClickOutside(modalRef, (e) => {
 function toggleEditing(editing: boolean) {
 	isEditing.value = editing;
 }
+// const props = defineProps({
+// 	todo: {
+// 		type: Todo, // the reason this is not Todo is because when we load from local storage it returns an Objec
+// 		// it would require sterializaer to convert it back to a Todo object, but that is a little too much work..
+// 		required: true,
+// 	},
+// });
+// change it to interface at some point
 const props = defineProps({
 	todo: {
-		type: Todo, // the reason this is not Todo is because when we load from local storage it returns an Objec
-		// it would require sterializaer to convert it back to a Todo object, but that is a little too much work..
+		type: Object,
 		required: true,
 	},
 });

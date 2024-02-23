@@ -4,6 +4,7 @@
 import { Todo } from "@/class/Todo";
 import type {
 	QueryDocumentSnapshot,
+	QuerySnapshot,
 	SnapshotOptions,
 } from "firebase/firestore";
 
@@ -39,5 +40,36 @@ export const todoConverter = {
 			data.priority,
 			data.favourite
 		);
+	},
+	fromFirestore2: function (
+		snapshot: QuerySnapshot,
+		options?: SnapshotOptions
+	) {
+		const data = snapshot.docs.map((doc) => {
+			// return in form of object
+			return {
+				title: doc.data().title,
+				description: doc.data().description,
+				completed: doc.data().completed,
+				type: doc.data().type,
+				date: doc.data().date,
+				dueDate: doc.data().dueDate,
+				id: doc.data().id,
+				priority: doc.data().priority,
+				favourite: doc.data().favourite,
+			};
+			// return new Todo(
+			// 	doc.data().title,
+			// 	doc.data().description,
+			// 	doc.data().completed,
+			// 	doc.data().type,
+			// 	doc.data().date,
+			// 	doc.data().dueDate,
+			// 	doc.data().id,
+			// 	doc.data().priority,
+			// 	doc.data().favourite
+			// );
+		});
+		return data;
 	},
 }; // export default todoConverter;

@@ -2,8 +2,22 @@
 import { Todo } from "@/class/Todo";
 import TodoCreator from "@/components/TodoCreator.vue";
 import TodoItemVue from "@/components/TodoItem.vue";
+import { fireStorage } from "@/utils/fireStorage";
 import { storage } from "@/utils/storage";
-import { ref, reactive, computed, watch, onBeforeMount } from "vue";
+import { todoConverter } from "@/utils/todoConverter";
+import { getAuth } from "firebase/auth";
+import {
+	CollectionReference,
+	collection,
+	getDocs,
+	getFirestore,
+	orderBy,
+	query,
+	where,
+	type DocumentData,
+} from "firebase/firestore";
+import { ref, reactive, computed, watch, onBeforeMount, onMounted } from "vue";
+import { useCollection, type _RefFirestore } from "vuefire";
 
 // at some point change todos to use the class todo instead of just
 let passMsg = ref("TESGING");
@@ -13,120 +27,73 @@ var todoList = reactive({
 	todosCompletedPast: [] as Todo[],
 	last_updated: new Date(),
 });
+const user = getAuth().currentUser;
+const util = new fireStorage(user?.email);
+util.init();
+// onBeforeMount(async () => {
+// 	await initTodo();
+// });
 
-// storage.savePastTodos
-// storage.savePastTodos(todoList.todosPastDue, todoList.todosCompletedPast);
-
-storage.savePastTodos(todoList.todosCompletedPast, todoList.todosPastDue);
-// read from local storage
-var todos = storage.load();
-console.log("load");
-console.log(todos);
-var old = storage.loadPastTodos;
-console.log("old");
-console.log(old);
-// var todosPastDue = old[0]
-console.log("initial Todo logging");
-todos.forEach((todo) => {
-	if (todo.dueDate != null) {
-		if (new Date(todo.dueDate) < new Date()) {
-			if (todo.completed) todoList.todosCompletedPast.push(todo);
-			else todoList.todosPastDue.push(todo);
-		} else {
-			todoList.todos.push(todo);
+// let currentTodos;
+let completedTodos: _RefFirestore<DocumentData[]>;
+let currentTodos: _RefFirestore<DocumentData[]>;
+const db = getFirestore();
+let todoRef: CollectionReference<DocumentData, DocumentData>;
+function todoInit() {
+	// first we get path?
+	if (user) {
+		console.log(user.email);
+		if (user.email != "") {
+			var userRef = collection(db, "Users");
+			var q = query(userRef, where("email", "==", user.email));
+			getDocs(q).then((querySnapshot) => {
+				todoRef = collection(db, querySnapshot.docs[0].ref.path, "todos");
+				console.log("logig from todoinit");
+				console.log(todoRef);
+				q = query(
+					todoRef,
+					where("completed", "==", false)
+					// where("dueDate", "<=", new Date().toISOString().split("T")[0]),
+					// orderBy("dueDate", "asc"),
+					// orderBy("date", "asc")
+				);
+				currentTodos = useCollection(q);
+				q = query(
+					todoRef,
+					where("completed", "==", true)
+					// where("dueDate", "<=", new Date().toISOString().split("T")[0]),
+					// orderBy("dueDate", "asc"),
+					// orderBy("date", "asc")
+				);
+				completedTodos = useCollection(q);
+			});
 		}
 	}
-});
-
-// todoList.todos = todos;
-
-watch(
-	todoList.todos,
-	(newTodos) => {
-		storage.save(newTodos);
-		storage.savePastTodos(todoList.todosCompletedPast, todoList.todosPastDue);
-	},
-	{ deep: true }
-);
-
-function receivedFunction1(todos: { title: string }[]) {
-	console.log("I have received todos from TodoCreator");
-	console.log(todos);
-	// todoList.todos = todos;
-	todoList.last_updated = new Date();
-	// todoList.last_updated = Date.now();
-	console.log(todoList);
 }
-
-function receivedFunction2(func: Function) {
-	// looks like you can also pass functions from child to parents which is cool
-	func();
-}
-
-function receivedFunction(todo: Todo) {
-	//  once received a new todo, add it to list of Todos, update the last_updated date, and save to local storage
-	todoList.last_updated = new Date();
-	todoList.todos.unshift(todo);
-	storage.save(todoList.todos);
-}
-function randclog(func: Function) {
-	console.log("using passed function");
-	func();
-	console.log("end of passed function");
-}
-
-function updatedReceivedFunction(todos: Todo[]) {}
+todoInit();
+console.log("FINISH TODO INIT, NOW LOGGING TODOS1");
+// console.log(todos1);
 function clearTodos() {
-	todoList.todos = [];
-	todoList.last_updated = new Date();
-	storage.save(todoList.todos);
+	// console.log(todos1.value);
+	console.log("logginv current doos");
+	console.log(currentTodos.value);
+	console.log("logginv done doos");
+	console.log(completedTodos.value);
 }
-console.log("logging todolist.todos" + todoList.todos);
-// const sortedTodos
-const sortedTodos = computed(() => {
-	return [...todoList.todos].sort((a, b) => {
-		// Favourites and not done come first
-		if (a.favourite && !a.completed && (!b.favourite || b.completed)) return -1;
-		if (b.favourite && !b.completed && (!a.favourite || a.completed)) return 1;
 
-		// Then come the notcompleted
-		if (!a.completed && b.completed) return -1;
-		if (a.completed && !b.completed) return 1;
-
-		// Then come thecompleted
-		return 0;
-	});
-});
-
-const pendingTodos = computed(() => {
-	var sorted = todoList.todos.filter((todo) => !todo.completed);
-	return [...sorted].sort((a, b) => {
-		// Favourites and not done come first
-		if (a.favourite && !a.completed && (!b.favourite || b.completed)) return -1;
-		if (b.favourite && !b.completed && (!a.favourite || a.completed)) return 1;
-
-		return 0;
-	});
-});
-
-const completedTodos = computed(() => {
-	return todoList.todos.filter((todo) => todo.completed);
-});
+function receivedFunction(todo: any) {
+	//  once received a new todo, add it to list of Todos, update the last_updated date, and save to local storage
+	// add to firestore
+	util.addTodo(todo);
+	console.log("adding todo to firestore");
+	console.log(todo);
+}
+// const todos = useCollection(collection(db, "todos"));
 </script>
 
 <template>
 	<main class="todo-main">
 		<button @click="clearTodos">Clear Todos</button>
-		<!-- <div class="main-container">
-			<div class="recent-updates">
-				<div>
-					<span class="last-updated">Last Updated On: </span
-					>{{ todoList.last_updated }}
-				</div>
-			</div>
-		</div> -->
-		<!-- <TodoItemVue v-for="todo in todoList.todos" :todo="todo" /> -->
-		<!-- <TodoItemVue v-for="todo in sortedTodos" :todo="todo" /> -->
 		<div name="list" class="pending-container">
 			<TodoCreator
 				:passed="passMsg"
@@ -135,10 +102,13 @@ const completedTodos = computed(() => {
 				@rand-log-event="randclog"
 			/>
 			<!-- <TodoItemVue :todo="pendingTodos[1]" :key="pendingTodos[1].id" /> -->
+
 			<div class="todos-pending">
-				<TodoItemVue v-for="todo in pendingTodos" :todo="todo" :key="todo.id" />
+				<TodoItemVue v-for="todo in currentTodos" :todo="todo" :key="todo.id" />
+				<!-- <TodoItemVue v-for="todo in pendingTodos" :todo="todo" :key="todo.id" /> -->
 				<div class="seperator">COMPLETED TODOS</div>
 				<div class="done-container">
+					<!-- <TodoItemVue v-for="todo in completedTodos" :todo="todo" /> -->
 					<TodoItemVue v-for="todo in completedTodos" :todo="todo" />
 				</div>
 			</div>

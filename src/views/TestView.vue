@@ -12,7 +12,7 @@ import { getAuth } from "firebase/auth";
 
 const fire = new fireUtil();
 const user = getAuth().currentUser;
-const fire2 = new fireStorage(user?.email);
+// const fire2 = new fireStorage(user?.email);
 
 var testTodo: Todo = new Todo("new todo", "asiodjasijd", false);
 
@@ -28,7 +28,7 @@ function testFunc() {
 	userExists
 		.then((result) => {
 			console.log("success" + result);
-			const testutil = new fireStorage(user?.email);
+			// const testutil = new fireStorage(user?.email);
 		})
 		.catch((result) => {
 			console.log("failuer" + result);

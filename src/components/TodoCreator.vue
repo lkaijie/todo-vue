@@ -1,13 +1,3 @@
-<!-- <template>
-	<div class="input-wrap">
-		<input
-			type="text"
-			placeholder="Enter the title of Todo"
-			v-model="todo.title"
-			@keyup.enter="addTodo"
-		/>
-	</div>
-</template> -->
 <template>
 	<div class="todo-item" @click="focusInput">
 		<input
@@ -17,10 +7,6 @@
 			v-model="todo.title"
 			@keyup.enter="addTodo"
 		/>
-
-		<!-- <div class="todo-info" @keyup.enter="addTodo" v-model="todo.title">
-			<p>ajkosdhjasd</p>
-		</div> -->
 	</div>
 </template>
 
@@ -62,10 +48,14 @@ function addTodo() {
 	//   completed: false,
 	// });
 	var newtodo = new Todo(title, description, false);
+
+	// var convertedTodo = JSON.stringify(newtodo);
+	var convertedTodo = Object.assign({}, newtodo);
 	todos.push(newtodo);
 	todo.title = "";
 	todo.content = "";
-	emit("addTodo", newtodo);
+	// emit("addTodo", newtodo);
+	emit("addTodo", convertedTodo);
 }
 // focus input of todocreator
 const todoInput = ref<HTMLInputElement | null>(null);
@@ -75,24 +65,6 @@ function focusInput() {
 		todoInput.value.focus();
 	}
 }
-
-// const focusInput = () => {
-// 	if (todoInput.value) {
-// 		todoInput.value.focus();
-// 	}
-// };
-
-function randclog() {
-	console.log("randclog");
-	console.log("randclog");
-	console.log("randclog");
-	console.log("randclog");
-	console.log("randclog");
-	console.log("randclog");
-	console.log("randclog");
-}
-
-console.log(todo.title);
 </script>
 
 <style scoped lang="scss">
