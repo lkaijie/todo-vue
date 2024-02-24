@@ -54,12 +54,18 @@ function handleLogIn() {
 	// loggedIn.value = !loggedIn.value;
 	console.log(loggedIn.value);
 	util.logIn();
+	// const todoUrl = window.location.href.split("/");
+	// todoUrl.pop();
+	// const urlWithoutLastPath = todoUrl.join("/");
+	// console.log(urlWithoutLastPath);
+	// window.location.replace(urlWithoutLastPath);
 }
 
 function handleLogOut() {
 	// loggedIn.value = !loggedIn.value;
 	console.log(loggedIn.value);
 	util.logOut();
+	window.location.reload();
 }
 
 function logUser() {

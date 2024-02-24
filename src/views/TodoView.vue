@@ -16,7 +16,16 @@ import {
 	where,
 	type DocumentData,
 } from "firebase/firestore";
-import { ref, reactive, computed, watch, onBeforeMount, onMounted } from "vue";
+import { connectStorageEmulator } from "firebase/storage";
+import {
+	ref,
+	reactive,
+	computed,
+	watch,
+	onBeforeMount,
+	onMounted,
+	provide,
+} from "vue";
 import { useCollection, type _RefFirestore } from "vuefire";
 
 // at some point change todos to use the class todo instead of just
@@ -30,6 +39,8 @@ var todoList = reactive({
 const user = getAuth().currentUser;
 const util = new fireStorage(user?.email);
 util.init();
+
+provide("fire-storage", util);
 // onBeforeMount(async () => {
 // 	await initTodo();
 // });
@@ -39,56 +50,127 @@ let completedTodos: _RefFirestore<DocumentData[]>;
 let currentTodos: _RefFirestore<DocumentData[]>;
 const db = getFirestore();
 let todoRef: CollectionReference<DocumentData, DocumentData>;
+let q;
+
+const userTodoRef = computed(() => {
+	const qry = query(collection(db, "Users"), where("email", "==", user.email));
+	// return getDocs(qry);
+	// return qry
+	const path = getDocs(qry).then((querySnapshot) => {
+		return querySnapshot.docs[0].ref.path;
+	});
+	return path;
+});
+
 function todoInit() {
 	// first we get path?
 	if (user) {
 		console.log(user.email);
 		if (user.email != "") {
 			var userRef = collection(db, "Users");
-			var q = query(userRef, where("email", "==", user.email));
-			getDocs(q).then((querySnapshot) => {
-				todoRef = collection(db, querySnapshot.docs[0].ref.path, "todos");
-				console.log("logig from todoinit");
-				console.log(todoRef);
-				q = query(
-					todoRef,
-					where("completed", "==", false)
-					// where("dueDate", "<=", new Date().toISOString().split("T")[0]),
-					// orderBy("dueDate", "asc"),
-					// orderBy("date", "asc")
-				);
-				currentTodos = useCollection(q);
-				q = query(
-					todoRef,
-					where("completed", "==", true)
-					// where("dueDate", "<=", new Date().toISOString().split("T")[0]),
-					// orderBy("dueDate", "asc"),
-					// orderBy("date", "asc")
-				);
-				completedTodos = useCollection(q);
-			});
+			q = query(userRef, where("email", "==", user.email));
+
+			// q = query(
+			// 	collection(db, userTodoRef.value.then((path) => path), "todos"),
+			// 	where("completed", "==", false)
+			// 	// where("dueDate", "<=", new Date().toISOString().split("T")[0]),
+			// 	// orderBy("dueDate", "asc"),
+			// 	// orderBy("date", "asc")
+			// );
+			// q = query(
+			// 	userTodoRef.value.then((path) => collection(db, path, "todos")),
+			// 	where("completed", "==", false)
+			// );
+
+			// getting path is the problem
+			// getDocs(q).then((querySnapshot) => {
+			// 	todoRef = collection(db, querySnapshot.docs[0].ref.path, "todos");
+			// 	console.log("logig from todoinit");
+			// 	console.log(todoRef);
+			// q = query(
+			// 	todoRef,
+			// 	where("completed", "==", false)
+			// 	// where("dueDate", "<=", new Date().toISOString().split("T")[0]),
+			// 	// orderBy("dueDate", "asc"),
+			// 	// orderBy("date", "asc")
+			// );
+			// currentTodos = useCollection(q);
+			// 	q = query(
+			// 		todoRef,
+			// 		where("completed", "==", true)
+			// 		// where("dueDate", "<=", new Date().toISOString().split("T")[0]),
+			// 		// orderBy("dueDate", "asc"),
+			// 		// orderBy("date", "asc")
+			// 	);
+			// 	completedTodos = useCollection(q);
+			// });
 		}
 	}
 }
 todoInit();
 console.log("FINISH TODO INIT, NOW LOGGING TODOS1");
-// console.log(todos1);
+console.log(q);
+console.log("FINISH TODO INIT, NOW LOGGING TODOS1");
+console.log("FINISH TODO INIT, NOW LOGGING TODOS1");
+const other = await userTodoRef.value;
+
+todoRef = collection(db, other, "todos");
+q = query(
+	todoRef,
+	where("completed", "==", false),
+	where("dueDate", ">=", new Date().toISOString().split("T")[0]),
+	orderBy("dueDate", "asc"),
+	orderBy("favourite", "desc"),
+	orderBy("date", "asc")
+);
+currentTodos = useCollection(q);
+q = query(
+	todoRef,
+	where("completed", "==", true),
+	where("dueDate", ">=", new Date().toISOString().split("T")[0]),
+	orderBy("dueDate", "asc"),
+	orderBy("date", "asc")
+);
+completedTodos = useCollection(q);
+console.log(other);
+console.log(userTodoRef.value.then((path) => console.log(path)));
+console.log("FINISH TODO INIT, NOW LOGGING TODOS1");
+// const testTodos = ref(completedTodos.value);
 function clearTodos() {
-	// console.log(todos1.value);
-	console.log("logginv current doos");
-	console.log(currentTodos.value);
-	console.log("logginv done doos");
-	console.log(completedTodos.value);
+	q = query(
+		todoRef,
+		where("completed", "==", false),
+		where("dueDate", ">=", new Date().toISOString().split("T")[0]),
+		orderBy("dueDate", "asc"),
+		orderBy("favourite", "desc"),
+		orderBy("date", "asc")
+	);
+	util.deleteTodos(q);
+	q = query(
+		todoRef,
+		where("completed", "==", true),
+		where("dueDate", ">=", new Date().toISOString().split("T")[0]),
+		orderBy("dueDate", "asc"),
+		orderBy("date", "asc")
+	);
+	util.deleteTodos(q);
 }
 
 function receivedFunction(todo: any) {
 	//  once received a new todo, add it to list of Todos, update the last_updated date, and save to local storage
 	// add to firestore
-	util.addTodo(todo);
+	util.addTodo2(todo);
 	console.log("adding todo to firestore");
 	console.log(todo);
 }
-// const todos = useCollection(collection(db, "todos"));
+// clearTodos();
+function toggleDone(id: string, completed: boolean) {
+	util.toggleCompleted(id, completed);
+}
+
+function toggleFav(id: string, favourite: boolean) {
+	util.toggleFavourite(id, favourite);
+}
 </script>
 
 <template>
@@ -99,17 +181,32 @@ function receivedFunction(todo: any) {
 				:passed="passMsg"
 				:list="todoList"
 				@add-todo="receivedFunction"
-				@rand-log-event="randclog"
 			/>
+			<!-- @rand-log-event="randclog" -->
 			<!-- <TodoItemVue :todo="pendingTodos[1]" :key="pendingTodos[1].id" /> -->
-
+			<!-- <ul>
+				<li v-for="todo in currentTodos" :key="todo.id">
+					<span>{{ todo.title }}</span>
+				</li>
+			</ul> -->
+			<!-- <TodoItemVue v-for="todo in pendingTodos" :todo="todo" :key="todo.id" /> -->
+			<!-- <TodoItemVue v-for="todo in completedTodos" :todo="todo" /> -->
 			<div class="todos-pending">
-				<TodoItemVue v-for="todo in currentTodos" :todo="todo" :key="todo.id" />
-				<!-- <TodoItemVue v-for="todo in pendingTodos" :todo="todo" :key="todo.id" /> -->
+				<TodoItemVue
+					v-for="todo in currentTodos"
+					:todo="todo"
+					:key="todo.id"
+					@toggle-done="toggleDone"
+					@toggle-favourite="toggleFav"
+				/>
 				<div class="seperator">COMPLETED TODOS</div>
 				<div class="done-container">
-					<!-- <TodoItemVue v-for="todo in completedTodos" :todo="todo" /> -->
-					<TodoItemVue v-for="todo in completedTodos" :todo="todo" />
+					<TodoItemVue
+						v-for="todo in completedTodos"
+						:todo="todo"
+						@toggle-done="toggleDone"
+						@toggle-favourite="toggleFav"
+					/>
 				</div>
 			</div>
 		</div>

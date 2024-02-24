@@ -30,26 +30,34 @@
 			</span>
 		</button>
 	</div>
-	<!-- <Transition>
+	<Transition>
 		<TodoEdit
 			v-if="isEditing"
 			:todo="todo"
 			ref="modalRef"
-			@close-edit="closeFunc"
+			@close-edit="toggleEditing"
 		/>
-	</Transition> -->
+		<!-- @close-edit="closeFunc" -->
+	</Transition>
 </template>
 
 <script setup lang="ts">
 import { Todo } from "@/class/Todo";
 import { onClickOutside } from "@vueuse/core";
-import { ref } from "vue";
+import { ref, inject } from "vue";
 // import TodoCreator from "./TodoCreator.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import TodoEdit from "./TodoEdit.vue";
+import { fireStorage } from "@/utils/fireStorage";
 
 let isEditing = ref(false);
 let modalRef = ref(null);
+// const util = new fireStorage();
+// util.init();
+const tutil: fireStorage = inject("fire-storage")!;
+// emits
+let emit = defineEmits(["toggleFavourite", "toggleDone"]);
+
 // custom directive for focusings.
 // const checkFocus = {
 // 	mounted(el: HTMLElement) {
@@ -89,8 +97,12 @@ const props = defineProps({
 // var favourite = document.getElementById("favourite");
 // favourite?.addEventListener("click", toggleFavourite);
 function toggleDone() {
-	props.todo.toggleCompleted();
-	if (props.todo.completed) {
+	// props.todo.toggleCompleted();
+
+	if (!props.todo.completed) {
+		// props.todo.completed = true;
+		// util.toggleCompleted(props.todo.id, true);
+
 		var completionSound = new Audio("sounds/completion2.mp3");
 		// console.log("completed");
 		completionSound.play();
@@ -100,19 +112,22 @@ function toggleDone() {
 		// 	completionSound.pause(); // Pause the sound
 		// 	completionSound.currentTime = 0; // Reset the time
 		// }, 700); // Stop after 500 milliseconds (0.5 seconds)
+		emit("toggleDone", props.todo.id, true);
+	} else {
+		emit("toggleDone", props.todo.id, false);
 	}
 }
 
 function toggleFavourite() {
-	props.todo.toggleFavourite();
 	console.log("toggleFavourite");
-	console.log(props.todo.favourite);
-	// console.log(favourite);
+	if (!props.todo.favourite) {
+		// emit("toggleFavourite", props.todo.id, true);
+		tutil.toggleFavourite(props.todo.id, true);
+	} else {
+		tutil.toggleFavourite(props.todo.id, false);
+		// emit("toggleFavourite", props.todo.id, false);
+	}
 }
-
-// if (props.todo.favourite) {
-// 	favourite.style.color = "gold";
-// }
 
 function editTodo() {
 	// prob show a popup or something

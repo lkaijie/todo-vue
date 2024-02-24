@@ -32,9 +32,12 @@ export class Todo {
 		completed = false,
 		type: string = "normal",
 		date: Date = new Date(),
-		dueDate: string = new Date(new Date().setDate(new Date().getDate() + 1))
+		dueDate: string = new Date(new Date().setDate(new Date().getDate()))
 			.toISOString()
 			.split("T")[0], // Set dueDate to one day after the current date (by copilot, source is also by them lol) (via https://stackoverflow.com/a/563442/1375163)
+		// dueDate: string = new Date(new Date().setDate(new Date().getDate() + 1))
+		// 	.toISOString()
+		// 	.split("T")[0], // Set dueDate to one day after the current date (by copilot, source is also by them lol) (via https://stackoverflow.com/a/563442/1375163)
 		// id: any =
 		// generate a random id (via https://stackoverflow.com/a/2117523/1375163)
 		id: any = Math.random().toString(36).substring(2, 15) +

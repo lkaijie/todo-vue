@@ -11,6 +11,7 @@ import router from "@/router";
 import { fireUtil } from "@/utils/firestoreUtil";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { addDoc, collection, getFirestore } from "firebase/firestore";
+import { url } from "inspector";
 
 const util = new fireUtil();
 
@@ -53,6 +54,15 @@ async function oauthGoogle() {
 		// });
 		// 	console.log(docRef);
 		// }
+
+		// window.location.replace();
+		// console.log(window.location.href);
+		// const todoUrl = window.location.href.split("/").pop().join()
+		const todoUrl = window.location.href.split("/");
+		todoUrl.pop();
+		const urlWithoutLastPath = todoUrl.join("/");
+		console.log(urlWithoutLastPath);
+		window.location.replace(urlWithoutLastPath);
 	} catch (error) {
 		console.log("sign in error", error);
 	}

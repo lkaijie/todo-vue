@@ -7,6 +7,7 @@ import {
 	QuerySnapshot,
 	addDoc,
 	collection,
+	deleteDoc,
 	doc,
 	getDoc,
 	getDocs,
@@ -14,6 +15,7 @@ import {
 	orderBy,
 	query,
 	setDoc,
+	updateDoc,
 	where,
 	type DocumentData,
 } from "firebase/firestore";
@@ -128,6 +130,13 @@ export class fireStorage {
 
 		await addDoc(this.todoRef, todo);
 	}
+	async addTodo2(todo: Object) {
+		if (todo.dateCompleted == undefined) {
+			todo.dateCompleted = new Date();
+		}
+		// const docRef = doc(this.todoRef, "todo");
+		await setDoc(doc(this.todoRef, todo.id), todo);
+	}
 
 	async getCurrentTodosReferece() {
 		// example dueDate: "2022-09-01"
@@ -140,5 +149,45 @@ export class fireStorage {
 			orderBy("date", "asc")
 		);
 		return q;
+	}
+
+	async toggleCompleted(id: string, completed: boolean) {
+		// console.log("toggled from firestorage");
+		// console.log(this.todoRef);
+
+		const reff = doc(this.todoRef, id);
+		await updateDoc(reff, {
+			completed: completed,
+		});
+	}
+	async toggleFavourite(id: string, completed: boolean) {
+		// console.log("toggled from firestorage");
+		// console.log(this.todoRef);
+
+		const reff = doc(this.todoRef, id);
+		await updateDoc(reff, {
+			favourite: completed,
+		});
+	}
+	async editTodo(id: string, todo: any) {
+		const reff = doc(this.todoRef, id);
+		console.log("logging todo");
+		console.log(todo);
+		await updateDoc(reff, todo);
+	}
+
+	// async deleteTodos(q: QuerySnapshot<DocumentData>) {
+	// 	q.forEach((doc) => {
+	// 		console.log(doc.id, " => ", doc.data());
+	// 	});
+	// }
+	async deleteTodos(q: Query<DocumentData, DocumentData>) {
+		const querySnapshot = await getDocs(q);
+		querySnapshot.forEach((doc) => {
+			deleteDoc(doc.ref);
+		});
+		// q.forEach((doc) => {
+		// 	deleteDoc(doc.ref);
+		// });
 	}
 }

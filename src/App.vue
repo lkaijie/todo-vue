@@ -4,6 +4,14 @@ import TodoHeader from "./components/TodoHeader.vue";
 import TodoFooter from "./components/TodoFooter.vue";
 import { getAuth } from "firebase/auth";
 // import TodoHeader from "./components/TodoHeader.vue";
+import { provide } from "vue";
+import { fireStorage } from "./utils/fireStorage";
+
+// const util = new fireStorage(getAuth().currentUser?.email);
+const user = getAuth().currentUser;
+const util = new fireStorage(user?.email);
+util.init();
+provide("fireStorage", util);
 
 // console.log(getAuth().currentUser);
 </script>
@@ -14,7 +22,10 @@ import { getAuth } from "firebase/auth";
 	</div>
 	<!-- <TodoHeader /> -->
 	<div class="container">
-		<RouterView />
+		<Suspense>
+			<RouterView />
+		</Suspense>
+		<!-- <RouterView /> -->
 	</div>
 	<!-- <TodoFooter /> -->
 </template>
