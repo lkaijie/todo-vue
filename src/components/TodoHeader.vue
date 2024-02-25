@@ -42,7 +42,7 @@ onAuthStateChanged(getAuth(), (user) => {
 });
 async function handleLogIn() {
 	// loggedIn.value = !loggedIn.value;
-	console.log(loggedIn.value);
+	// console.log(loggedIn.value);
 	await util.logIn();
 	// go to main page
 	window.location.replace("/");
@@ -50,7 +50,7 @@ async function handleLogIn() {
 
 async function handleLogOut() {
 	// loggedIn.value = !loggedIn.value;
-	console.log(loggedIn.value);
+	// console.log(loggedIn.value);
 	await util.logOut();
 	// go to about page
 	// window.location.replace("/about");

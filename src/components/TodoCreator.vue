@@ -29,7 +29,7 @@ const todo = reactive({
 });
 
 function addDescription() {
-	console.log("addDescription");
+	// console.log("addDescription");
 	//   error checking here later on, helper function perhaps
 	emit("addDescription", todo);
 }
@@ -42,11 +42,7 @@ function addTodo() {
 		return;
 	}
 	var description = todo.content;
-	// var newtodo = reactive({
-	//   title: title,
-	//   description: description,
-	//   completed: false,
-	// });
+
 	var newtodo = new Todo(title, description, false);
 
 	// var convertedTodo = JSON.stringify(newtodo);
@@ -54,7 +50,6 @@ function addTodo() {
 	todos.push(newtodo);
 	todo.title = "";
 	todo.content = "";
-	// emit("addTodo", newtodo);
 	emit("addTodo", convertedTodo);
 }
 // focus input of todocreator

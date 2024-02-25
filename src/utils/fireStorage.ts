@@ -30,8 +30,6 @@ export class fireStorage {
 	constructor(userEmail: string = "") {
 		this.db = getFirestore();
 		this.userRef = collection(this.db, "Users");
-		console.log("from firestorage");
-		console.log(this.userRef);
 		this.userEmail = userEmail;
 	}
 
@@ -48,51 +46,14 @@ export class fireStorage {
 		}
 
 		const todosasd = useCollection(this.userRef);
-		console.log("todosasd");
-		console.log(todosasd);
 	}
-	// constructor(userEmail: string = "") {
-	// 	// const db = getFirestore();
-	// 	this.db = getFirestore();
-	// 	this.userRef = collection(this.db, "Users");
-	// 	console.log("akodjasoidjoaisdjnoasjdioasjdioasjoid");
-	// 	console.log(userEmail);
-	// 	this.userEmail = userEmail;
-	// 	if (userEmail != "") {
-	// 		const q = query(this.userRef, where("email", "==", userEmail));
-	// 		const querySnapshot = getDocs(q);
-
-	// 		querySnapshot.then((results) => {
-	// 			// const documents = results.docs
-	// 			this.todoRef = collection(this.db, results.docs[0].ref.path, "todos");
-	// 			console.log("LOGGING PATH");
-	// 			console.log(results.docs[0].ref.path);
-	// 			console.log("logging ref");
-	// 			console.log(this.todoRef);
-	// 		});
-
-	// 		// querySnapshot.this.todoRef = collection(this.db, "Users");
-	// 		// this.todoRef.
-	// 	}
-
-	// 	// console.log(this.userRef);
-	// }
 
 	async getTodos(): Promise<QuerySnapshot<DocumentData>> {
 		if (this.userEmail != "") {
-			// await getDocs(this.todoRef).then((result) => {
-			// 	console.log("todos");
-			// 	console.log(result);
-			// 	return result;
-			// });
-			console.log("logged todoref");
-			console.log(this.todoRef);
-			console.log(this.userEmail);
 			const result2 = await getDocs(this.todoRef);
 			return result2;
 		} else {
-			console.log("joaishdisa");
-			console.log(this.userEmail);
+			// console.log(this.userEmail);
 			throw "User is not logged in!";
 		}
 		// return query(this.todoRef);
@@ -107,7 +68,7 @@ export class fireStorage {
 
 		await addDoc(this.todoRef, todoConverted)
 			.then((result) => {
-				console.log("added todo");
+				// console.log("added todo");
 			})
 			.catch((error) => {
 				console.log(error);
@@ -134,7 +95,7 @@ export class fireStorage {
 		if (todo.dateCompleted == undefined) {
 			todo.dateCompleted = new Date();
 		}
-		// const docRef = doc(this.todoRef, "todo");
+
 		await setDoc(doc(this.todoRef, todo.id), todo);
 	}
 
@@ -152,18 +113,12 @@ export class fireStorage {
 	}
 
 	async toggleCompleted(id: string, completed: boolean) {
-		// console.log("toggled from firestorage");
-		// console.log(this.todoRef);
-
 		const reff = doc(this.todoRef, id);
 		await updateDoc(reff, {
 			completed: completed,
 		});
 	}
 	async toggleFavourite(id: string, completed: boolean) {
-		// console.log("toggled from firestorage");
-		// console.log(this.todoRef);
-
 		const reff = doc(this.todoRef, id);
 		await updateDoc(reff, {
 			favourite: completed,
@@ -171,16 +126,11 @@ export class fireStorage {
 	}
 	async editTodo(id: string, todo: any) {
 		const reff = doc(this.todoRef, id);
-		console.log("logging todo");
-		console.log(todo);
+		// console.log("logging todo");
+		// console.log(todo);
 		await updateDoc(reff, todo);
 	}
 
-	// async deleteTodos(q: QuerySnapshot<DocumentData>) {
-	// 	q.forEach((doc) => {
-	// 		console.log(doc.id, " => ", doc.data());
-	// 	});
-	// }
 	async deleteTodos(q: Query<DocumentData, DocumentData>) {
 		const querySnapshot = await getDocs(q);
 		querySnapshot.forEach((doc) => {

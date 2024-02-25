@@ -66,13 +66,13 @@ const { textarea, input } = useTextareaAutosize({
 });
 
 function addTab(e: KeyboardEvent) {
-	console.log(e);
+	// console.log(e);
 	const target = e.target as HTMLTextAreaElement;
 
 	const spaces = "    "; // 4 spaces
 	const start = target.selectionStart;
-	console.log(start);
-	console.log(target);
+	// console.log(start);
+	// console.log(target);
 	const end = target.selectionEnd;
 	const value = target.value;
 	input.value = value.substring(0, start) + spaces + value.substring(end);
@@ -96,7 +96,7 @@ function deleteTodo() {
 }
 
 onUnmounted(() => {
-	console.log("unmounted");
+	// console.log("unmounted");
 	props.todo.description = input.value;
 });
 </script>

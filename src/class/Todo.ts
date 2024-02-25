@@ -1,15 +1,3 @@
-// export class Todo {
-//     text: string;
-//     completed: boolean;
-//     id: any;
-//     constructor(text:string, completed = false) {
-//         this.text = text;
-//         this.completed = completed;
-//         // this.id = uuid_1.v4();
-//     }
-// }
-// export default new Todo();
-
 export class Todo {
 	title: string;
 	description: string;
@@ -82,7 +70,7 @@ export class Todo {
 	toggleCompleted() {
 		this.completed = !this.completed;
 		this.dateCompleted = new Date();
-		console.log("toggled from the class xd");
+		// console.log("toggled from the class xd");
 	}
 	toggleFavourite() {
 		this.favourite = !this.favourite;

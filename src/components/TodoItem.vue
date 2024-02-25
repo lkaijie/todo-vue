@@ -107,7 +107,7 @@ function toggleDone() {
 }
 
 function toggleFavourite() {
-	console.log("toggleFavourite");
+	// console.log("toggleFavourite");
 	if (!props.todo.favourite) {
 		// emit("toggleFavourite", props.todo.id, true);
 		tutil.toggleFavourite(props.todo.id, true);
@@ -119,7 +119,7 @@ function toggleFavourite() {
 
 function editTodo() {
 	// prob show a popup or something
-	console.log("editTodo");
+	// console.log("editTodo");
 	isEditing.value = true;
 }
 </script>
