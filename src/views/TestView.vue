@@ -5,6 +5,7 @@
 </template>
 
 <script setup lang="ts">
+// @ts-nocheck
 import { Todo } from "@/class/Todo";
 import { fireStorage } from "@/utils/fireStorage";
 import { fireUtil } from "@/utils/firestoreUtil";

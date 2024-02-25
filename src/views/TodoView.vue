@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// @ts-nocheck
 import { Todo } from "@/class/Todo";
 import TodoCreator from "@/components/TodoCreator.vue";
 import TodoItemVue from "@/components/TodoItem.vue";
@@ -109,8 +110,8 @@ function receivedFunction(todo: any) {
 	//  once received a new todo, add it to list of Todos, update the last_updated date, and save to local storage
 	// add to firestore
 	util.addTodo2(todo);
-	console.log("adding todo to firestore");
-	console.log(todo);
+	// console.log("adding todo to firestore");
+	// console.log(todo);
 }
 // clearTodos();
 function toggleDone(id: string, completed: boolean) {

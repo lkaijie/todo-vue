@@ -45,7 +45,7 @@ async function handleLogIn() {
 	// console.log(loggedIn.value);
 	await util.logIn();
 	// go to main page
-	window.location.replace("/");
+	window.location.replace("/todo-vue");
 }
 
 async function handleLogOut() {
@@ -55,7 +55,7 @@ async function handleLogOut() {
 	// go to about page
 	// window.location.replace("/about");
 	// im guessing why this works is because it redirects but in index.ts it checks if it requires auth, yes sot it sends toa bout
-	window.location.replace("/");
+	window.location.replace("/todo-vue");
 	// window.location.reload();
 }
 

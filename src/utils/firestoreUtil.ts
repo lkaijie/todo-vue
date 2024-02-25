@@ -66,16 +66,19 @@ export class fireUtil {
 	}
 
 	async createNewUser(info: User): Promise<boolean> {
+		//
+		console.log("creating new user");
+		console.log(info);
 		try {
-			console.log("gwjusgiusdbgiubg");
+			// console.log("gwjusgiusdbgiubg");
 			const docRef = await addDoc(this.userRef, {
 				displayName: info.displayName,
 				email: info.email,
 				// creationTime: info.creationTime,
 				creationTime: new Date(),
 			});
-			console.log(docRef, "FROM THE INNNER OF FIREUTILS");
-			console.log("asjkolhdjikashgdik");
+			// console.log(docRef, "FROM THE INNNER OF FIREUTILS");
+			// console.log("asjkolhdjikashgdik");
 			return true;
 		} catch (error) {
 			console.log(error);
@@ -87,7 +90,7 @@ export class fireUtil {
 		const provider = new GoogleAuthProvider();
 		try {
 			const result = await signInWithPopup(getAuth(), provider);
-			console.log(result);
+			// console.log(result);
 			const db = getFirestore();
 			const currentUser = getAuth().currentUser;
 

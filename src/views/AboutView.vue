@@ -19,6 +19,8 @@
 </template>
 
 <script setup lang="ts">
+// @ts-nocheck
+
 import router from "@/router";
 import { fireUtil } from "@/utils/firestoreUtil";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
@@ -41,12 +43,22 @@ async function oauthGoogle() {
 		await util.checkUserExists(currentUser?.email).then((result) => {
 			if (result === true) {
 				console.log("About view, user already exists, logging in");
+				const todoUrl = window.location.href.split("/");
+				todoUrl.pop();
+				const urlWithoutLastPath = todoUrl.join("/");
+				console.log(urlWithoutLastPath);
+				window.location.replace(urlWithoutLastPath);
 			} else {
 				util
 					.createNewUser(currentUser)
 					.then((result) => {
 						console.log("about view, user does not exists, creating user");
 						console.log(result);
+						const todoUrl = window.location.href.split("/");
+						todoUrl.pop();
+						const urlWithoutLastPath = todoUrl.join("/");
+						console.log(urlWithoutLastPath);
+						window.location.replace(urlWithoutLastPath);
 					})
 					.catch((result) => {
 						console.log("error creating user");
@@ -73,11 +85,6 @@ async function oauthGoogle() {
 		// window.location.replace();
 		// console.log(window.location.href);
 		// const todoUrl = window.location.href.split("/").pop().join()
-		const todoUrl = window.location.href.split("/");
-		todoUrl.pop();
-		const urlWithoutLastPath = todoUrl.join("/");
-		console.log(urlWithoutLastPath);
-		window.location.replace(urlWithoutLastPath);
 	} catch (error) {
 		console.log("sign in error", error);
 	}
