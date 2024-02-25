@@ -22,11 +22,8 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { inject, ref } from "vue";
 import { RouterLink } from "vue-router";
 
-// const util = new fireUtil();
 const util = inject("fireUtil") as fireUtil;
 
-// const loggedIn = getAuth().currentUser;
-// var loggedIn = true;
 var loggedIn = ref(util.checkUserLoggedIn());
 // console.log(loggedIn, "AKOSHDIUASHD");
 // handle logins
@@ -49,12 +46,6 @@ async function handleLogIn() {
 	await util.logIn();
 	// go to main page
 	window.location.replace("/");
-
-	// const todoUrl = window.location.href.split("/");
-	// todoUrl.pop();
-	// const urlWithoutLastPath = todoUrl.join("/");
-	// console.log(urlWithoutLastPath);
-	// window.location.replace(urlWithoutLastPath);
 }
 
 async function handleLogOut() {

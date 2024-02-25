@@ -9,8 +9,6 @@
 			<!-- empty checkbox -->
 			<font-awesome-icon v-else :icon="['far', 'square']" class="fcomplete" />
 		</div>
-
-		<!-- <label for="checklist">Checklist</label> -->
 		<div
 			class="todo-info"
 			@click="editTodo"
@@ -58,14 +56,6 @@ const tutil: fireStorage = inject("fire-storage")!;
 // emits
 let emit = defineEmits(["toggleFavourite", "toggleDone"]);
 
-// custom directive for focusings.
-// const checkFocus = {
-// 	mounted(el: HTMLElement) {
-// 		el.focus();
-// 		onclick;
-// 	},
-// };
-
 onClickOutside(modalRef, (e) => {
 	setTimeout(() => {
 		isEditing.value = false;
@@ -94,8 +84,6 @@ const props = defineProps({
 // i see the problem with this approach, this one gets ALL elements with favourte,
 // instead of the one i want so it messes up
 
-// var favourite = document.getElementById("favourite");
-// favourite?.addEventListener("click", toggleFavourite);
 function toggleDone() {
 	// props.todo.toggleCompleted();
 
@@ -134,8 +122,6 @@ function editTodo() {
 	console.log("editTodo");
 	isEditing.value = true;
 }
-
-// console.log("Logging prop[s into" + props);
 </script>
 
 <style scoped>

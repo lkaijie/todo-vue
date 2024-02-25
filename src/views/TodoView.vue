@@ -41,11 +41,6 @@ const util = new fireStorage(user?.email);
 util.init();
 
 provide("fire-storage", util);
-// onBeforeMount(async () => {
-// 	await initTodo();
-// });
-
-// let currentTodos;
 let completedTodos: _RefFirestore<DocumentData[]>;
 let currentTodos: _RefFirestore<DocumentData[]>;
 const db = getFirestore();
@@ -54,8 +49,6 @@ let q;
 
 const userTodoRef = computed(() => {
 	const qry = query(collection(db, "Users"), where("email", "==", user.email));
-	// return getDocs(qry);
-	// return qry
 	const path = getDocs(qry).then((querySnapshot) => {
 		return querySnapshot.docs[0].ref.path;
 	});
@@ -65,53 +58,13 @@ const userTodoRef = computed(() => {
 function todoInit() {
 	// first we get path?
 	if (user) {
-		console.log(user.email);
 		if (user.email != "") {
 			var userRef = collection(db, "Users");
 			q = query(userRef, where("email", "==", user.email));
-
-			// q = query(
-			// 	collection(db, userTodoRef.value.then((path) => path), "todos"),
-			// 	where("completed", "==", false)
-			// 	// where("dueDate", "<=", new Date().toISOString().split("T")[0]),
-			// 	// orderBy("dueDate", "asc"),
-			// 	// orderBy("date", "asc")
-			// );
-			// q = query(
-			// 	userTodoRef.value.then((path) => collection(db, path, "todos")),
-			// 	where("completed", "==", false)
-			// );
-
-			// getting path is the problem
-			// getDocs(q).then((querySnapshot) => {
-			// 	todoRef = collection(db, querySnapshot.docs[0].ref.path, "todos");
-			// 	console.log("logig from todoinit");
-			// 	console.log(todoRef);
-			// q = query(
-			// 	todoRef,
-			// 	where("completed", "==", false)
-			// 	// where("dueDate", "<=", new Date().toISOString().split("T")[0]),
-			// 	// orderBy("dueDate", "asc"),
-			// 	// orderBy("date", "asc")
-			// );
-			// currentTodos = useCollection(q);
-			// 	q = query(
-			// 		todoRef,
-			// 		where("completed", "==", true)
-			// 		// where("dueDate", "<=", new Date().toISOString().split("T")[0]),
-			// 		// orderBy("dueDate", "asc"),
-			// 		// orderBy("date", "asc")
-			// 	);
-			// 	completedTodos = useCollection(q);
-			// });
 		}
 	}
 }
 todoInit();
-console.log("FINISH TODO INIT, NOW LOGGING TODOS1");
-console.log(q);
-console.log("FINISH TODO INIT, NOW LOGGING TODOS1");
-console.log("FINISH TODO INIT, NOW LOGGING TODOS1");
 const other = await userTodoRef.value;
 
 todoRef = collection(db, other, "todos");
@@ -132,10 +85,6 @@ q = query(
 	orderBy("date", "asc")
 );
 completedTodos = useCollection(q);
-console.log(other);
-console.log(userTodoRef.value.then((path) => console.log(path)));
-console.log("FINISH TODO INIT, NOW LOGGING TODOS1");
-// const testTodos = ref(completedTodos.value);
 function clearTodos() {
 	q = query(
 		todoRef,
