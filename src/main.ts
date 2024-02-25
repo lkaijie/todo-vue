@@ -10,7 +10,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 /* import specific icons */
-import { faUserSecret } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faUserSecret } from "@fortawesome/free-solid-svg-icons";
 // import star for favourites
 import { faStar, faCheckSquare, fas } from "@fortawesome/free-solid-svg-icons";
 import { faSquare } from "@fortawesome/free-regular-svg-icons";
@@ -39,6 +39,7 @@ library.add(faUserSecret);
 library.add(faStar);
 library.add(fas);
 library.add(faSquare);
+library.add(faTrash);
 
 const app = createApp(App);
 const util = new fireUtil();

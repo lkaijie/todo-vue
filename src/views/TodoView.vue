@@ -175,22 +175,13 @@ function toggleFav(id: string, favourite: boolean) {
 
 <template>
 	<main class="todo-main">
-		<button @click="clearTodos">Clear Todos</button>
+		<button @click="clearTodos" class="clear-todo">Clear Todos</button>
 		<div name="list" class="pending-container">
 			<TodoCreator
 				:passed="passMsg"
 				:list="todoList"
 				@add-todo="receivedFunction"
 			/>
-			<!-- @rand-log-event="randclog" -->
-			<!-- <TodoItemVue :todo="pendingTodos[1]" :key="pendingTodos[1].id" /> -->
-			<!-- <ul>
-				<li v-for="todo in currentTodos" :key="todo.id">
-					<span>{{ todo.title }}</span>
-				</li>
-			</ul> -->
-			<!-- <TodoItemVue v-for="todo in pendingTodos" :todo="todo" :key="todo.id" /> -->
-			<!-- <TodoItemVue v-for="todo in completedTodos" :todo="todo" /> -->
 			<div class="todos-pending">
 				<TodoItemVue
 					v-for="todo in currentTodos"
@@ -232,15 +223,6 @@ function toggleFav(id: string, favourite: boolean) {
 }
 
 .pending-container {
-	// display: flex;
-	// flex-direction: column;
-	// align-items: center;
-	// justify-content: center;
-	// background-color: aliceblue;
-	// padding: 5rem;
-	// overflow-y: auto;
-	// max-height: 60%;
-	// margin: 20px;
 	margin: 10px 20px 10px 20px;
 	height: 95%;
 	width: 80%;
@@ -286,5 +268,48 @@ function toggleFav(id: string, favourite: boolean) {
 .todos-pending {
 	overflow-y: scroll;
 	max-height: 100%;
+}
+
+.clear-todo {
+	display: inline-block;
+	font-size: 1em;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 10px;
+	background: none;
+	text-align: center;
+	text-decoration: none;
+	transition: background-color 0.3s ease;
+	cursor: pointer;
+}
+
+.clear-todo:hover {
+	background-color: #f2f2f2;
+	/* background-color: #add8e6; */
+}
+@media (max-width: 600px) {
+	.recent-updates {
+		flex-direction: column;
+	}
+
+	.pending-container {
+		width: 100%;
+		margin: 10px 0;
+		display: flex;
+		flex-direction: column-reverse;
+	}
+
+	.done-container {
+		padding: 2rem;
+	}
+
+	.main-container {
+		padding: 0.5rem;
+	}
+
+	.clear-todo {
+		padding: 5px 10px;
+		display: none;
+	}
 }
 </style>

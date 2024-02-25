@@ -1,8 +1,20 @@
 <template>
+	<!-- make this into an actual about page i guess? maybe I should put tech stack, problems etc idk? -->
 	<div class="about">
-		<h1>This is an about page</h1>
-		<button @click="oauthGoogle">Click me to login</button>
-		<button @click="logUser">asdas</button>
+		<h1>About</h1>
+		<!-- <button @click="logUser">asdas</button> -->
+		<div class="content">
+			This app requires sign in to work, currently only supports Oauth 2.0 for
+			google logins, database and authentication implemented with
+			<span>Firebase</span>, built with <span>Vue</span> and
+			<span>Typescript</span>.
+		</div>
+		<button v-if="!loggedIn" @click="oauthGoogle" class="login-button">
+			Click here to login
+		</button>
+		<div v-else class="logged-in">
+			You are logged in! Click on the Home Tab to view your Todos
+		</div>
 	</div>
 </template>
 
@@ -11,9 +23,12 @@ import router from "@/router";
 import { fireUtil } from "@/utils/firestoreUtil";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { addDoc, collection, getFirestore } from "firebase/firestore";
-import { url } from "inspector";
+import { ref } from "vue";
+// import { url } from "inspector";
 
 const util = new fireUtil();
+
+var loggedIn = ref(util.checkUserLoggedIn());
 
 async function oauthGoogle() {
 	const provider = new GoogleAuthProvider();
@@ -93,12 +108,49 @@ function logUser() {
 }
 </script>
 
-<style>
+<style scoped>
 @media (min-width: 1024px) {
 	.about {
-		min-height: 100vh;
+		/* min-height: 100vh; */
 		display: flex;
+		justify-content: center;
+		flex-direction: column;
 		align-items: center;
+		/* margin-top: 50px; */
+		padding-top: 50px;
 	}
+}
+.login-button {
+	margin: 2rem;
+}
+.logged-in {
+	margin: 2rem;
+}
+.content {
+	margin: 1rem 3rem 0 3rem;
+}
+span {
+	font-weight: 600;
+}
+
+/* color: #fff; */
+/* background-color: #3498db; */
+button {
+	display: inline-block;
+	font-size: 1em;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 10px;
+	background: none;
+	text-align: center;
+	text-decoration: none;
+	transition: background-color 0.3s ease;
+	cursor: pointer;
+	/* margin: 2rem; */
+}
+
+button:hover {
+	background-color: #f2f2f2;
+	/* background-color: #add8e6; */
 }
 </style>

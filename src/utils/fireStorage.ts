@@ -186,8 +186,9 @@ export class fireStorage {
 		querySnapshot.forEach((doc) => {
 			deleteDoc(doc.ref);
 		});
-		// q.forEach((doc) => {
-		// 	deleteDoc(doc.ref);
-		// });
+	}
+
+	async deleteTodoById(id: string) {
+		await deleteDoc(doc(this.todoRef, id));
 	}
 }

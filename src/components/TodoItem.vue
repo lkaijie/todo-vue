@@ -251,12 +251,9 @@ p {
 	/* color: blue; */
 	font-size: 1.5rem;
 }
-/* 
-p:nth-child(3) {
-	color: green;
+@media (max-width: 600px) {
+	p {
+		font-size: 1rem;
+	}
 }
-
-p:nth-child(4) {
-	color: purple;
-} */
 </style>

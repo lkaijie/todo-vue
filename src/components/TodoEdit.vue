@@ -25,8 +25,16 @@
 				<option value="medium">Medium</option>
 				<option value="high">High</option>
 			</select>
-
-			<button type="submit" @click="editTodo">Save</button>
+			<div class="submit-sections">
+				<button type="submit" @click="editTodo" class="edit">Save</button>
+				<!-- <button type="submit" @click="deleteTodo" class="delete"> -->
+				<font-awesome-icon
+					:icon="['fas', 'trash']"
+					class="delete"
+					@click="deleteTodo"
+				/>
+				<!-- </button> -->
+			</div>
 		</form>
 	</div>
 </template>
@@ -82,6 +90,11 @@ const submitForm = () => {
 function editTodo() {
 	util.editTodo(props.todo.id, tempTodo);
 }
+
+function deleteTodo() {
+	util.deleteTodoById(props.todo.id);
+}
+
 onUnmounted(() => {
 	console.log("unmounted");
 	props.todo.description = input.value;
@@ -138,5 +151,22 @@ onUnmounted(() => {
 	background-color: #007bff;
 	color: white;
 	cursor: pointer;
+}
+
+.delete {
+	cursor: pointer;
+	padding: 5px;
+	font-size: 1.3rem;
+}
+
+.edit {
+	width: 60%;
+}
+
+.submit-sections {
+	/* margin: 5px; */
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 </style>

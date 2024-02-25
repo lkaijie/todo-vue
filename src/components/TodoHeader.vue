@@ -9,15 +9,8 @@
 				<li><RouterLink to="/">Home</RouterLink></li>
 				<li><RouterLink to="/about">About</RouterLink></li>
 				<li v-if="!loggedIn" class="login" @click="handleLogIn">Log in</li>
-
 				<li v-else class="login" @click="handleLogOut">Log out</li>
 			</ul>
-			<!-- <div v-if="loggedIn" class="login" @click="loggedIn = !loggedIn">
-				Log in
-			</div>
-			<div v-else class="login" @click="loggedIn = !loggedIn">Logout</div> -->
-			<!-- <h1 v-if="awesome">Vue is awesome!</h1>
-			<h1 v-else>Oh no 😢</h1> -->
 		</nav>
 	</header>
 </template>
@@ -35,7 +28,7 @@ const util = inject("fireUtil") as fireUtil;
 // const loggedIn = getAuth().currentUser;
 // var loggedIn = true;
 var loggedIn = ref(util.checkUserLoggedIn());
-console.log(loggedIn, "AKOSHDIUASHD");
+// console.log(loggedIn, "AKOSHDIUASHD");
 // handle logins
 onAuthStateChanged(getAuth(), (user) => {
 	if (user) {
@@ -50,10 +43,13 @@ onAuthStateChanged(getAuth(), (user) => {
 		loggedIn.value = false;
 	}
 });
-function handleLogIn() {
+async function handleLogIn() {
 	// loggedIn.value = !loggedIn.value;
 	console.log(loggedIn.value);
-	util.logIn();
+	await util.logIn();
+	// go to main page
+	window.location.replace("/");
+
 	// const todoUrl = window.location.href.split("/");
 	// todoUrl.pop();
 	// const urlWithoutLastPath = todoUrl.join("/");
@@ -61,11 +57,15 @@ function handleLogIn() {
 	// window.location.replace(urlWithoutLastPath);
 }
 
-function handleLogOut() {
+async function handleLogOut() {
 	// loggedIn.value = !loggedIn.value;
 	console.log(loggedIn.value);
-	util.logOut();
-	window.location.reload();
+	await util.logOut();
+	// go to about page
+	// window.location.replace("/about");
+	// im guessing why this works is because it redirects but in index.ts it checks if it requires auth, yes sot it sends toa bout
+	window.location.replace("/");
+	// window.location.reload();
 }
 
 function logUser() {
@@ -112,6 +112,11 @@ function logUser() {
 	a {
 		text-decoration: none;
 		color: #5a5a5a;
+	}
+	a:hover,
+	li:hover {
+		// background-color: #f2f2f2;
+		color: #d0d0d0;
 	}
 }
 </style>
