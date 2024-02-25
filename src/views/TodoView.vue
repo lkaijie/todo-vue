@@ -1,9 +1,33 @@
 <script setup lang="ts">
+// @ts-nocheck
 import { Todo } from "@/class/Todo";
 import TodoCreator from "@/components/TodoCreator.vue";
 import TodoItemVue from "@/components/TodoItem.vue";
+import { fireStorage } from "@/utils/fireStorage";
 import { storage } from "@/utils/storage";
-import { ref, reactive, computed, watch, onBeforeMount } from "vue";
+import { todoConverter } from "@/utils/todoConverter";
+import { getAuth } from "firebase/auth";
+import {
+	CollectionReference,
+	collection,
+	getDocs,
+	getFirestore,
+	orderBy,
+	query,
+	where,
+	type DocumentData,
+} from "firebase/firestore";
+import { connectStorageEmulator } from "firebase/storage";
+import {
+	ref,
+	reactive,
+	computed,
+	watch,
+	onBeforeMount,
+	onMounted,
+	provide,
+} from "vue";
+import { useCollection, type _RefFirestore } from "vuefire";
 
 // at some point change todos to use the class todo instead of just
 let passMsg = ref("TESGING");
@@ -13,133 +37,117 @@ var todoList = reactive({
 	todosCompletedPast: [] as Todo[],
 	last_updated: new Date(),
 });
+const user = getAuth().currentUser;
+const util = new fireStorage(user?.email);
+util.init();
 
-// storage.savePastTodos
-// storage.savePastTodos(todoList.todosPastDue, todoList.todosCompletedPast);
+provide("fire-storage", util);
+let completedTodos: _RefFirestore<DocumentData[]>;
+let currentTodos: _RefFirestore<DocumentData[]>;
+const db = getFirestore();
+let todoRef: CollectionReference<DocumentData, DocumentData>;
+let q;
 
-storage.savePastTodos(todoList.todosCompletedPast, todoList.todosPastDue);
-// read from local storage
-var todos = storage.load();
-console.log("load");
-console.log(todos);
-var old = storage.loadPastTodos;
-console.log("old");
-console.log(old);
-// var todosPastDue = old[0]
-console.log("initial Todo logging");
-todos.forEach((todo) => {
-	if (todo.dueDate != null) {
-		if (new Date(todo.dueDate) < new Date()) {
-			if (todo.completed) todoList.todosCompletedPast.push(todo);
-			else todoList.todosPastDue.push(todo);
-		} else {
-			todoList.todos.push(todo);
+const userTodoRef = computed(() => {
+	const qry = query(collection(db, "Users"), where("email", "==", user.email));
+	const path = getDocs(qry).then((querySnapshot) => {
+		return querySnapshot.docs[0].ref.path;
+	});
+	return path;
+});
+
+function todoInit() {
+	// first we get path?
+	if (user) {
+		if (user.email != "") {
+			var userRef = collection(db, "Users");
+			q = query(userRef, where("email", "==", user.email));
 		}
 	}
-});
+}
+todoInit();
+const other = await userTodoRef.value;
 
-// todoList.todos = todos;
-
-watch(
-	todoList.todos,
-	(newTodos) => {
-		storage.save(newTodos);
-		storage.savePastTodos(todoList.todosCompletedPast, todoList.todosPastDue);
-	},
-	{ deep: true }
+todoRef = collection(db, other, "todos");
+q = query(
+	todoRef,
+	where("completed", "==", false),
+	where("dueDate", ">=", new Date().toISOString().split("T")[0]),
+	orderBy("dueDate", "asc"),
+	orderBy("favourite", "desc"),
+	orderBy("date", "asc")
 );
-
-function receivedFunction1(todos: { title: string }[]) {
-	console.log("I have received todos from TodoCreator");
-	console.log(todos);
-	// todoList.todos = todos;
-	todoList.last_updated = new Date();
-	// todoList.last_updated = Date.now();
-	console.log(todoList);
-}
-
-function receivedFunction2(func: Function) {
-	// looks like you can also pass functions from child to parents which is cool
-	func();
-}
-
-function receivedFunction(todo: Todo) {
-	//  once received a new todo, add it to list of Todos, update the last_updated date, and save to local storage
-	todoList.last_updated = new Date();
-	todoList.todos.unshift(todo);
-	storage.save(todoList.todos);
-}
-function randclog(func: Function) {
-	console.log("using passed function");
-	func();
-	console.log("end of passed function");
-}
-
-function updatedReceivedFunction(todos: Todo[]) {}
+currentTodos = useCollection(q);
+q = query(
+	todoRef,
+	where("completed", "==", true),
+	where("dueDate", ">=", new Date().toISOString().split("T")[0]),
+	orderBy("dueDate", "asc"),
+	orderBy("date", "asc")
+);
+completedTodos = useCollection(q);
 function clearTodos() {
-	todoList.todos = [];
-	todoList.last_updated = new Date();
-	storage.save(todoList.todos);
+	q = query(
+		todoRef,
+		where("completed", "==", false),
+		where("dueDate", ">=", new Date().toISOString().split("T")[0]),
+		orderBy("dueDate", "asc"),
+		orderBy("favourite", "desc"),
+		orderBy("date", "asc")
+	);
+	util.deleteTodos(q);
+	q = query(
+		todoRef,
+		where("completed", "==", true),
+		where("dueDate", ">=", new Date().toISOString().split("T")[0]),
+		orderBy("dueDate", "asc"),
+		orderBy("date", "asc")
+	);
+	util.deleteTodos(q);
 }
-console.log("logging todolist.todos" + todoList.todos);
-// const sortedTodos
-const sortedTodos = computed(() => {
-	return [...todoList.todos].sort((a, b) => {
-		// Favourites and not done come first
-		if (a.favourite && !a.completed && (!b.favourite || b.completed)) return -1;
-		if (b.favourite && !b.completed && (!a.favourite || a.completed)) return 1;
 
-		// Then come the notcompleted
-		if (!a.completed && b.completed) return -1;
-		if (a.completed && !b.completed) return 1;
+function receivedFunction(todo: any) {
+	//  once received a new todo, add it to list of Todos, update the last_updated date, and save to local storage
+	// add to firestore
+	util.addTodo2(todo);
+	// console.log("adding todo to firestore");
+	// console.log(todo);
+}
+// clearTodos();
+function toggleDone(id: string, completed: boolean) {
+	util.toggleCompleted(id, completed);
+}
 
-		// Then come thecompleted
-		return 0;
-	});
-});
-
-const pendingTodos = computed(() => {
-	var sorted = todoList.todos.filter((todo) => !todo.completed);
-	return [...sorted].sort((a, b) => {
-		// Favourites and not done come first
-		if (a.favourite && !a.completed && (!b.favourite || b.completed)) return -1;
-		if (b.favourite && !b.completed && (!a.favourite || a.completed)) return 1;
-
-		return 0;
-	});
-});
-
-const completedTodos = computed(() => {
-	return todoList.todos.filter((todo) => todo.completed);
-});
+function toggleFav(id: string, favourite: boolean) {
+	util.toggleFavourite(id, favourite);
+}
 </script>
 
 <template>
 	<main class="todo-main">
-		<button @click="clearTodos">Clear Todos</button>
-		<!-- <div class="main-container">
-			<div class="recent-updates">
-				<div>
-					<span class="last-updated">Last Updated On: </span
-					>{{ todoList.last_updated }}
-				</div>
-			</div>
-		</div> -->
-		<!-- <TodoItemVue v-for="todo in todoList.todos" :todo="todo" /> -->
-		<!-- <TodoItemVue v-for="todo in sortedTodos" :todo="todo" /> -->
+		<button @click="clearTodos" class="clear-todo">Clear Todos</button>
 		<div name="list" class="pending-container">
 			<TodoCreator
 				:passed="passMsg"
 				:list="todoList"
 				@add-todo="receivedFunction"
-				@rand-log-event="randclog"
 			/>
-			<!-- <TodoItemVue :todo="pendingTodos[1]" :key="pendingTodos[1].id" /> -->
 			<div class="todos-pending">
-				<TodoItemVue v-for="todo in pendingTodos" :todo="todo" :key="todo.id" />
+				<TodoItemVue
+					v-for="todo in currentTodos"
+					:todo="todo"
+					:key="todo.id"
+					@toggle-done="toggleDone"
+					@toggle-favourite="toggleFav"
+				/>
 				<div class="seperator">COMPLETED TODOS</div>
 				<div class="done-container">
-					<TodoItemVue v-for="todo in completedTodos" :todo="todo" />
+					<TodoItemVue
+						v-for="todo in completedTodos"
+						:todo="todo"
+						@toggle-done="toggleDone"
+						@toggle-favourite="toggleFav"
+					/>
 				</div>
 			</div>
 		</div>
@@ -165,15 +173,6 @@ const completedTodos = computed(() => {
 }
 
 .pending-container {
-	// display: flex;
-	// flex-direction: column;
-	// align-items: center;
-	// justify-content: center;
-	// background-color: aliceblue;
-	// padding: 5rem;
-	// overflow-y: auto;
-	// max-height: 60%;
-	// margin: 20px;
 	margin: 10px 20px 10px 20px;
 	height: 95%;
 	width: 80%;
@@ -219,5 +218,48 @@ const completedTodos = computed(() => {
 .todos-pending {
 	overflow-y: scroll;
 	max-height: 100%;
+}
+
+.clear-todo {
+	display: inline-block;
+	font-size: 1em;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 10px;
+	background: none;
+	text-align: center;
+	text-decoration: none;
+	transition: background-color 0.3s ease;
+	cursor: pointer;
+}
+
+.clear-todo:hover {
+	background-color: #f2f2f2;
+	/* background-color: #add8e6; */
+}
+@media (max-width: 600px) {
+	.recent-updates {
+		flex-direction: column;
+	}
+
+	.pending-container {
+		width: 100%;
+		margin: 10px 0;
+		display: flex;
+		flex-direction: column-reverse;
+	}
+
+	.done-container {
+		padding: 2rem;
+	}
+
+	.main-container {
+		padding: 0.5rem;
+	}
+
+	.clear-todo {
+		padding: 5px 10px;
+		display: none;
+	}
 }
 </style>

@@ -31,7 +31,7 @@ export const storage = {
 			const todosParsed = JSON.parse(todos);
 			const convertedTodos: Todo[] = [];
 			todosParsed.forEach((todo: Todo) => {
-				console.log(todo);
+				// console.log(todo);
 				convertedTodos.push(
 					new Todo(
 						todo.title,

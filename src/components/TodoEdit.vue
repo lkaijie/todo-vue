@@ -3,70 +3,79 @@
 		<h1>Edit Todo</h1>
 		<form @submit.prevent="submitForm">
 			<label for="title">Title</label>
-			<input id="title" v-model="todo.title" type="text" required />
+			<!-- <input id="title" v-model="todo.title" type="text" required /> -->
+			<input id="title" v-model="tempTodo.title" type="text" required />
 
 			<label for="description">Description</label>
 			<textarea
 				id="description"
 				v-model="input"
 				type="text"
-				required
 				ref="textarea"
 				@keydown.tab.prevent="addTab"
 			></textarea>
+			<!-- required -->
 
 			<label for="dueDate">Due Date</label>
-			<input id="dueDate" v-model="todo.dueDate" type="date" />
+			<input id="dueDate" v-model="tempTodo.dueDate" type="date" />
 
 			<label for="priority">Priority</label>
-			<select id="priority" v-model="todo.priority">
+			<select id="priority" v-model="tempTodo.priority">
 				<option value="low">Low</option>
 				<option value="medium">Medium</option>
 				<option value="high">High</option>
 			</select>
-
-			<button type="submit">Save</button>
+			<div class="submit-sections">
+				<button type="submit" @click="editTodo" class="edit">Save</button>
+				<!-- <button type="submit" @click="deleteTodo" class="delete"> -->
+				<font-awesome-icon
+					:icon="['fas', 'trash']"
+					class="delete"
+					@click="deleteTodo"
+				/>
+				<!-- </button> -->
+			</div>
 		</form>
 	</div>
 </template>
 
 <script setup lang="ts">
 import { Todo } from "@/class/Todo";
-import { ref, onMounted, watch, onUnmounted, nextTick } from "vue";
+import { ref, onMounted, watch, onUnmounted, nextTick, inject } from "vue";
 import { useTextareaAutosize } from "@vueuse/core";
+import { fireStorage } from "@/utils/fireStorage";
 // reference to props.todo
 
 let emit = defineEmits(["closeEdit"]);
 
+// const util2 = new fireStorage();
+const util: fireStorage = inject("fire-storage")!;
+
 const props = defineProps({
 	todo: {
-		type: Todo,
+		type: Object,
 		required: true,
 	},
 });
-
+const tempTodo = Object.assign({}, props.todo);
+// const todoTitle = props.todo.title;
+// const
 const { textarea, input } = useTextareaAutosize({
-	input: props.todo.description,
+	// input: props.todo.description,
+	input: tempTodo.description,
 });
 
 function addTab(e: KeyboardEvent) {
-	console.log(e);
+	// console.log(e);
 	const target = e.target as HTMLTextAreaElement;
 
 	const spaces = "    "; // 4 spaces
 	const start = target.selectionStart;
-	console.log(start);
-	console.log(target);
+	// console.log(start);
+	// console.log(target);
 	const end = target.selectionEnd;
 	const value = target.value;
-	// target.setSelectionRange(start, end);
 	input.value = value.substring(0, start) + spaces + value.substring(end);
-	// target.selectionEnd = target.selectionStart = 1;
-	// target.selectionEnd = target.selectionStart = start + spaces.length;
-	// props.todo.description =
-	// 	value.substring(0, start) + spaces + value.substring(end);
-	// target.value = value.substring(0, start) + spaces + value.substring(end);
-	// target.selectionStart = target.selectionEnd = start - spaces.length;
 	e.preventDefault();
 	nextTick(() => {
 		target.selectionEnd = target.selectionStart = start + spaces.length;
@@ -75,12 +84,19 @@ function addTab(e: KeyboardEvent) {
 
 const submitForm = () => {
 	// Handle form submission
-
 	emit("closeEdit", false);
 };
 
+function editTodo() {
+	util.editTodo(props.todo.id, tempTodo);
+}
+
+function deleteTodo() {
+	util.deleteTodoById(props.todo.id);
+}
+
 onUnmounted(() => {
-	console.log("unmounted");
+	// console.log("unmounted");
 	props.todo.description = input.value;
 });
 </script>
@@ -135,5 +151,22 @@ onUnmounted(() => {
 	background-color: #007bff;
 	color: white;
 	cursor: pointer;
+}
+
+.delete {
+	cursor: pointer;
+	padding: 5px;
+	font-size: 1.3rem;
+}
+
+.edit {
+	width: 60%;
+}
+
+.submit-sections {
+	/* margin: 5px; */
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 </style>

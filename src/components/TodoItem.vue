@@ -9,8 +9,6 @@
 			<!-- empty checkbox -->
 			<font-awesome-icon v-else :icon="['far', 'square']" class="fcomplete" />
 		</div>
-
-		<!-- <label for="checklist">Checklist</label> -->
 		<div
 			class="todo-info"
 			@click="editTodo"
@@ -35,28 +33,28 @@
 			v-if="isEditing"
 			:todo="todo"
 			ref="modalRef"
-			@close-edit="closeFunc"
+			@close-edit="toggleEditing"
 		/>
+		<!-- @close-edit="closeFunc" -->
 	</Transition>
 </template>
 
 <script setup lang="ts">
 import { Todo } from "@/class/Todo";
 import { onClickOutside } from "@vueuse/core";
-import { ref } from "vue";
+import { ref, inject } from "vue";
 // import TodoCreator from "./TodoCreator.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import TodoEdit from "./TodoEdit.vue";
+import { fireStorage } from "@/utils/fireStorage";
 
 let isEditing = ref(false);
 let modalRef = ref(null);
-// custom directive for focusings.
-// const checkFocus = {
-// 	mounted(el: HTMLElement) {
-// 		el.focus();
-// 		onclick;
-// 	},
-// };
+// const util = new fireStorage();
+// util.init();
+const tutil: fireStorage = inject("fire-storage")!;
+// emits
+let emit = defineEmits(["toggleFavourite", "toggleDone"]);
 
 onClickOutside(modalRef, (e) => {
 	setTimeout(() => {
@@ -68,10 +66,17 @@ onClickOutside(modalRef, (e) => {
 function toggleEditing(editing: boolean) {
 	isEditing.value = editing;
 }
+// const props = defineProps({
+// 	todo: {
+// 		type: Todo, // the reason this is not Todo is because when we load from local storage it returns an Objec
+// 		// it would require sterializaer to convert it back to a Todo object, but that is a little too much work..
+// 		required: true,
+// 	},
+// });
+// change it to interface at some point
 const props = defineProps({
 	todo: {
-		type: Todo, // the reason this is not Todo is because when we load from local storage it returns an Objec
-		// it would require sterializaer to convert it back to a Todo object, but that is a little too much work..
+		type: Object,
 		required: true,
 	},
 });
@@ -79,11 +84,13 @@ const props = defineProps({
 // i see the problem with this approach, this one gets ALL elements with favourte,
 // instead of the one i want so it messes up
 
-// var favourite = document.getElementById("favourite");
-// favourite?.addEventListener("click", toggleFavourite);
 function toggleDone() {
-	props.todo.toggleCompleted();
-	if (props.todo.completed) {
+	// props.todo.toggleCompleted();
+
+	if (!props.todo.completed) {
+		// props.todo.completed = true;
+		// util.toggleCompleted(props.todo.id, true);
+
 		var completionSound = new Audio("sounds/completion2.mp3");
 		// console.log("completed");
 		completionSound.play();
@@ -93,27 +100,28 @@ function toggleDone() {
 		// 	completionSound.pause(); // Pause the sound
 		// 	completionSound.currentTime = 0; // Reset the time
 		// }, 700); // Stop after 500 milliseconds (0.5 seconds)
+		emit("toggleDone", props.todo.id, true);
+	} else {
+		emit("toggleDone", props.todo.id, false);
 	}
 }
 
 function toggleFavourite() {
-	props.todo.toggleFavourite();
-	console.log("toggleFavourite");
-	console.log(props.todo.favourite);
-	// console.log(favourite);
+	// console.log("toggleFavourite");
+	if (!props.todo.favourite) {
+		// emit("toggleFavourite", props.todo.id, true);
+		tutil.toggleFavourite(props.todo.id, true);
+	} else {
+		tutil.toggleFavourite(props.todo.id, false);
+		// emit("toggleFavourite", props.todo.id, false);
+	}
 }
-
-// if (props.todo.favourite) {
-// 	favourite.style.color = "gold";
-// }
 
 function editTodo() {
 	// prob show a popup or something
-	console.log("editTodo");
+	// console.log("editTodo");
 	isEditing.value = true;
 }
-
-// console.log("Logging prop[s into" + props);
 </script>
 
 <style scoped>
@@ -229,12 +237,9 @@ p {
 	/* color: blue; */
 	font-size: 1.5rem;
 }
-/* 
-p:nth-child(3) {
-	color: green;
+@media (max-width: 600px) {
+	p {
+		font-size: 1rem;
+	}
 }
-
-p:nth-child(4) {
-	color: purple;
-} */
 </style>
