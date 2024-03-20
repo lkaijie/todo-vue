@@ -1,12 +1,10 @@
 # TodoVue
 
 The classic To-Do app built with Vue 3.
-
-### Planned Features?
-
-Authenticaion, Database?
-
-This template should help get you started developing with Vue 3 in Vite.
+Mobile View
+![alt text](./src/assets/mobile-preview.png "Mobile View")
+Desktop View
+![alt text](./src/assets/desktop-preview.png "Desktop View")
 
 ## Recommended IDE Setup
 
